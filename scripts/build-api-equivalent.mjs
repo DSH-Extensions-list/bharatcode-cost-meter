@@ -20,6 +20,10 @@ for (const name of ['client.js', 'client.pricing.js']) {
   source = replaceOnce(source, name === 'client.js' ? 'factory:Ce=>{' : 'factory:le=>{', (name === 'client.js' ? 'factory:Ce=>{' : 'factory:le=>{') + injection)
   if (name === 'client.js') {
     if (!source.includes('apiEquivalent:e.prices?.apiEquivalent')) source = replaceOnce(source, 'prices:{models:n,', 'prices:{apiEquivalent:e.prices?.apiEquivalent,models:n,')
+    if (!source.includes('pt.__testBilling={decodeUsage:Ta,mergeSessionUsage:Ro,')) source = replaceOnce(source, 'pt.__testBilling={', 'pt.__testBilling={decodeUsage:Ta,mergeSessionUsage:Ro,')
+    const decodedBuckets = '...Ye(s,["input","output","cacheRead","cacheWrite","reasoning","cost"],l)'
+    const decodedBucketsWithCalls = '...Ye(s,["input","output","cacheRead","cacheWrite","reasoning","calls","cost"],l)'
+    if (!source.includes(decodedBucketsWithCalls)) source = replaceOnce(source, decodedBuckets, decodedBucketsWithCalls)
     const seam = 'function et(e,t,o){'
     const branch = 'if(o?.prices?.apiEquivalent?.enabled===true)return formatApiEquivalent(estimateApiEquivalent(t,o.prices.apiEquivalent),value=>W(value,o));'
     if (!source.includes(seam + branch)) source = replaceOnce(source, seam, seam + branch)

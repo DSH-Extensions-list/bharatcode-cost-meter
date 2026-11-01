@@ -5,9 +5,9 @@ import vm from 'node:vm'
 import { defaultConfig, applyConfigPatch, sanitizeConfig } from '../lib/store.js'
 import { defaultApiEquivalentConfig } from '../lib/api-equivalent-pricing.js'
 
-function loadClient(name) {
+function loadClient(name, reactOverrides = {}) {
   let contribution
-  const react = { createElement: (type, props, ...children) => ({ type, props: props ?? {}, children }), Fragment: 'fragment', useState: initial => [typeof initial === 'function' ? initial() : initial, () => {}], useEffect: () => {}, useRef: () => ({ current: null }) }
+  const react = { createElement: (type, props, ...children) => ({ type, props: props ?? {}, children }), Fragment: 'fragment', useState: initial => [typeof initial === 'function' ? initial() : initial, () => {}], useEffect: () => {}, useRef: () => ({ current: null }), ...reactOverrides }
   const sandbox = { window: { __ModuleLoader__: { load(value) { contribution = value } } }, document: { querySelector: () => null, createElement: () => ({ remove() {}, dataset: {}, style: {} }), head: { appendChild() {}, append() {} } } }
   vm.runInNewContext(readFileSync(new URL('../lib/' + name, import.meta.url), 'utf8'), sandbox)
   return contribution.factory(name => name === 'react' ? react : {})
@@ -57,4 +57,56 @@ test('the host strict wire codec preserves estimate settings for the browser', a
   const schema = TYPERT.invocations.find(row => row.method === 'getState').result.schema.shape.config.shape.prices.unwrap()
   const prices = defaultConfig().prices
   assert.deepEqual(schema.parse(prices).apiEquivalent, prices.apiEquivalent)
+})
+
+
+test('real browser decode and session aggregation preserve model calls for the long-context estimate warning', () => {
+  const api = loadClient('client.js').__testBilling
+  const key = 'antigravity:gemini-2.5-pro'
+  const row = { input: 150_000, output: 10_000, cacheRead: 0, cacheWrite: 0, calls: 1, cost: 0 }
+  const decode = () => api.decodeUsage({ ...row, byProviderModel: { [key]: { ...row } } }, 'fixture')
+  const own = decode(), subagents = decode()
+  assert.equal(own.byProviderModel[key].calls, 1)
+  const config = defaultConfig()
+  const combined = api.mergeSessionUsage(undefined, { own, subagents, subagentCount: 1 }, true, config)
+  assert.equal(combined.byProviderModel[key].calls, 2)
+  assert.match(api.estimatedUsageAmount(0, combined, config), /aggregate tier estimate/)
+})
+
+test('malformed optional estimate notes are rejected before changing config or breaking the host wire', async () => {
+  const { TYPERT } = await import('../lib/typert.host.js')
+  const schema = TYPERT.invocations.find(row => row.method === 'getState').result.schema.shape.config.shape.prices.unwrap()
+  const config = defaultConfig(), before = structuredClone(config)
+  for (const unpricedModels of [null, [], 'notes', { 'provider:model': 17 }, { 'provider:model': null }]) {
+    const bad = { ...config.prices.apiEquivalent, unpricedModels }
+    const result = applyConfigPatch(config, { prices: { apiEquivalent: bad } })
+    assert.ok(result.errors.length > 0)
+    assert.deepEqual(config, before)
+    assert.equal(schema.safeParse(result.config.prices).success, true)
+  }
+  const noNotes = { ...config.prices.apiEquivalent }
+  delete noNotes.unpricedModels
+  const valid = applyConfigPatch(config, { prices: { apiEquivalent: noNotes } })
+  assert.deepEqual(valid.errors, [])
+  assert.equal(schema.safeParse(valid.config.prices).success, true)
+})
+
+
+test('the actual browser editor retains its draft and reports malformed optional notes', async () => {
+  const draft = defaultConfig()
+  const before = structuredClone(draft)
+  const bad = { ...draft.prices.apiEquivalent, unpricedModels: null }
+  let hook = 0, error = '', changed = false
+  const client = loadClient('client.pricing.js', { useState: () => hook++ === 0 ? [JSON.stringify(bad), () => {}] : [error, value => { error = value }] })
+  const view = await client.mount({ get: key => key === 'remote' ? { $mount: async () => () => {} } : {}, effect() {} })
+  const catalogue = view({ mode: 'catalog', state: { config: draft }, draft, setDraft: () => { changed = true }, locale: 'en' })
+  const editor = catalogue.children[0]
+  const rendered = editor.type(editor.props)
+  rendered.children.find(child => child?.type === 'button').props.onClick()
+  assert.equal(changed, false)
+  assert.deepEqual(draft, before)
+  assert.match(error, /Use enabled:boolean/)
+  hook = 0
+  const retried = editor.type(editor.props)
+  assert.equal(retried.children.find(child => child?.props?.role === 'alert').children[0], error)
 })
