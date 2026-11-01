@@ -9,3 +9,7 @@ Original authors retain ownership of their work. Existing license and attributio
 `INSTALLED-PACKAGE.json` records SHA-256 hashes for every file copied from the installed package. Additional distribution documentation and license files are not part of that original-file inventory. Package identifiers, dependency versions, executable files, and plugin configuration are unchanged.
 
 Use the archive attached to the `installed-1.9.39-english.20261025` GitHub release when you need this captured package. DSH must meet the package's peer dependency requirements. Publication here does not establish compatibility with other DSH versions or operating systems.
+
+## API-equivalent estimate development
+
+The `codex/api-equivalent-pricing` branch modifies the preserved package with a separate, explicitly labeled session API-equivalent estimate. The original `INSTALLED-PACKAGE.json` remains the immutable inventory of the 2026-10-30 capture; its hashes do not describe this modified package. New readable implementation, behavioral tests and reproducible narrow bundle build are included. See [API-equivalent estimates](docs/api-equivalent-estimates.md). No running installation was changed.
