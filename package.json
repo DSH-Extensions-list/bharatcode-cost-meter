@@ -283,7 +283,7 @@
     "test:custom": "node --import ./test/resolve-host.mjs --test test/custom-*.test.mjs"
   },
   "devDependencies": {
-    "@deepseek-ai/dsh-credentials": "0.2.1-rc.4",
+    "@deepseek-ai/dsh-credentials": "0.2.1-rc.5",
     "@deepseek-ai/dsh-home-paths": "0.2.1-rc.4",
     "esbuild": "^0.28.2"
   }
