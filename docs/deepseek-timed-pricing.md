@@ -1,0 +1,15 @@
+# DeepSeek estimates use request timing
+
+The session cost header now estimates DeepSeek calls at their recorded request-start time. It shows the total and separate peak/off-peak amounts, call counts and tokens. Hover the session cost line for the current phase and schedule. Weekday peak windows are 09:00–12:00 and 14:00–18:00 Beijing time (06:30–09:30 and 11:30–15:30 Asia/Kolkata). Boundaries are start-inclusive and end-exclusive. Weekends use off-peak from the published 23 August 2026 rule; the published 2026 Chinese public holidays are included. A holiday table update is required for new public-holiday calendars. Calls before the supported schedule, missing timestamps/rates or unreadable history remain explicitly unpriced.
+
+BharatCode DeepSeek uses a direct-API equivalent, not an assertion of gateway billing. Exact configured Flash/Pro bindings and established official/account aliases retain separate rates. Configured DeepSeek API-equivalent rates are the off-peak rates; peak applies twice those rates. Flash default USD per million: uncached input 0.15/0.30, cached input 0.003/0.006, output 0.60/1.20 (off-peak/peak). Pro default: 0.66/1.32, 0.022/0.044, 1.98/3.96. Output already includes reasoning.
+
+Canonical replay excludes inherited fork calls and deduplicates native usage. It uses step/start timestamps, falling back to usage event timestamps only when request-start metadata is absent. Compaction retains its own event timestamp. The existing include-subagent setting controls descendant inclusion; API estimates and ordinary ledger charges remain separate. Existing ordinary-charge history is not rewritten. This corrects session-header API-equivalent estimates; the ordinary daily/history ledger continues showing recorded charge accounting.
+
+Implementation: `deepseek-session-pricing.js` reads the existing cached metadata-only usage source, merging native billing journals and canonical replay, cached by source fingerprint and estimate configuration. The optional summary is carried by the strict host codec and preserved/merged by the actual browser codec. The browser computes non-DeepSeek estimates as before, replaces the former blanket off-peak DeepSeek subtotal with the timed summary and labels missing timing. No conversation bodies are persisted by the new summary.
+
+The preserved bilingual browser bundle was within 409 bytes of its store bound. The reproducible build now reads immutable preserved bundle bases, compresses repeated stylesheet fragments with a build-time exact roundtrip assertion, and minifies the resulting bundle. It does not change CSS values or remove languages.
+
+Verification: `node --test test/*.test.mjs` (when host peer dependencies are resolvable) covers schedule boundaries, weekends/holidays, request-start vs completion, missing timing, seed exclusion, exact Flash/Pro rates, parent/child merging, actual browser factory behavior, strict wire schema and all 14,074 captured audit records. `test/resolve-host.mjs` is a local development resolver for this machine's installed host peer packages.
+
+Reference: https://api-docs.deepseek.com/quick_start/pricing/ (retrieved 6 November 2026).

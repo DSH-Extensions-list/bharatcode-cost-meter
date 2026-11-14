@@ -1,3 +1,7 @@
+# Current compatibility update
+
+The source tree now builds version **1.9.39-english.20261114.rc3.1** for DeepSeek Harness **0.2.2-rc.3**. See [compatibility and verification](RC3-COMPATIBILITY.md). Earlier inventories and published release verification below describe historical snapshots only.
+
 # Installed DSH package snapshot
 
 This repository preserves the installed **@arzvaak/bharatcode-cost-meter** package, version **1.9.39-english.20261025**, captured on 2026-10-30. It is a package mirror, including the English customizations present in this installation, where applicable.

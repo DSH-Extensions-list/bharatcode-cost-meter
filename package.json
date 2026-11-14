@@ -1,22 +1,22 @@
 {
   "name": "@arzvaak/bharatcode-cost-meter",
-  "version": "1.9.39-english.20261101.1",
-  "description": "DeepSeek Harness 会话费用统计插件:本会话成本、当日费用、历史记录与官方价格同步,支持多厂商多模型价格计费(内置 170+ 模型 ID 价格目录与自动匹配)、主流 Coding Plan 订阅额度查询与显示(14 家,含 WorkBuddy 官方积分、OpenDesign 工作区查询、含小米 MiMo Token Plan 控制台 Cookie 查询、SCNet Token Plan 本地 Credits 计量与火山方舟 Volcano Ark Coding Plan AK/SK 签名查询)、自定义 Provider 余额查询(可配任意 HTTP 端点)与余额进度条、峰谷计价时段显示与切换前弹窗/系统通知提醒(位置/提前量/类型可配),界面中英双语。Session cost tracking plugin for DeepSeek Harness: per-conversation cost, daily totals, history and official price sync, with multi-vendor model pricing (built-in 170+ model-ID catalog with auto-matching), Coding Plan quota queries & display for 14 vendors (incl. WorkBuddy official credits, OpenDesign workspace queries, Xiaomi MiMo Token Plan via console cookie, local credits metering for the SCNet Token Plan and Volcano Ark Coding Plan via AK/SK signature), plan/API dual-track billing with per-1% & full-window Token Plan usage estimates, custom provider balance lookup (configurable HTTP endpoint) and balance progress bar, plus peak/off-peak pricing display with pre-switch popup & system-notification alerts (position / lead time / type configurable), in a bilingual (Chinese/English) UI.",
+  "version": "1.9.39-english.20261114.rc3.1",
+  "description": "DeepSeek Harness \u4f1a\u8bdd\u8d39\u7528\u7edf\u8ba1\u63d2\u4ef6:\u672c\u4f1a\u8bdd\u6210\u672c\u3001\u5f53\u65e5\u8d39\u7528\u3001\u5386\u53f2\u8bb0\u5f55\u4e0e\u5b98\u65b9\u4ef7\u683c\u540c\u6b65,\u652f\u6301\u591a\u5382\u5546\u591a\u6a21\u578b\u4ef7\u683c\u8ba1\u8d39(\u5185\u7f6e 170+ \u6a21\u578b ID \u4ef7\u683c\u76ee\u5f55\u4e0e\u81ea\u52a8\u5339\u914d)\u3001\u4e3b\u6d41 Coding Plan \u8ba2\u9605\u989d\u5ea6\u67e5\u8be2\u4e0e\u663e\u793a(14 \u5bb6,\u542b WorkBuddy \u5b98\u65b9\u79ef\u5206\u3001OpenDesign \u5de5\u4f5c\u533a\u67e5\u8be2\u3001\u542b\u5c0f\u7c73 MiMo Token Plan \u63a7\u5236\u53f0 Cookie \u67e5\u8be2\u3001SCNet Token Plan \u672c\u5730 Credits \u8ba1\u91cf\u4e0e\u706b\u5c71\u65b9\u821f Volcano Ark Coding Plan AK/SK \u7b7e\u540d\u67e5\u8be2)\u3001\u81ea\u5b9a\u4e49 Provider \u4f59\u989d\u67e5\u8be2(\u53ef\u914d\u4efb\u610f HTTP \u7aef\u70b9)\u4e0e\u4f59\u989d\u8fdb\u5ea6\u6761\u3001\u5cf0\u8c37\u8ba1\u4ef7\u65f6\u6bb5\u663e\u793a\u4e0e\u5207\u6362\u524d\u5f39\u7a97/\u7cfb\u7edf\u901a\u77e5\u63d0\u9192(\u4f4d\u7f6e/\u63d0\u524d\u91cf/\u7c7b\u578b\u53ef\u914d),\u754c\u9762\u4e2d\u82f1\u53cc\u8bed\u3002Session cost tracking plugin for DeepSeek Harness: per-conversation cost, daily totals, history and official price sync, with multi-vendor model pricing (built-in 170+ model-ID catalog with auto-matching), Coding Plan quota queries & display for 14 vendors (incl. WorkBuddy official credits, OpenDesign workspace queries, Xiaomi MiMo Token Plan via console cookie, local credits metering for the SCNet Token Plan and Volcano Ark Coding Plan via AK/SK signature), plan/API dual-track billing with per-1% & full-window Token Plan usage estimates, custom provider balance lookup (configurable HTTP endpoint) and balance progress bar, plus peak/off-peak pricing display with pre-switch popup & system-notification alerts (position / lead time / type configurable), in a bilingual (Chinese/English) UI.",
   "type": "module",
-  "main": "lib/bootstrap.js",
+  "main": "lib/bootstrap.timed.js",
   "bin": {
     "dsh-cost-meter": "./lib/billing-storage-cli.js",
     "dsh-cost-meter-repair-sessions": "./lib/repair-sessions-cli.js"
   },
   "exports": {
     ".": {
-      "default": "./lib/bootstrap.js"
+      "default": "./lib/bootstrap.timed.js"
     },
     "./client": {
       "default": "./lib/client.js"
     },
     "./typert": {
-      "default": "./lib/typert.host.js"
+      "default": "./lib/typert.timed.js"
     },
     "./package.json": "./package.json",
     "./locale/*.json": "./locale/*.json"
@@ -35,18 +35,19 @@
         "0.2.0-rc.2": "compatible",
         "0.2.1-alpha.5": "compatible",
         "0.2.1-rc.1": "compatible",
-        "0.2.1-rc.2": "compatible"
+        "0.2.1-rc.2": "compatible",
+        "0.2.2-rc.3": "compatible"
       }
     }
   },
   "dshhub": {
     "schemaVersion": 1,
     "displayName": "dsh-cost-meter",
-    "summary": "DeepSeek Harness 会话费用统计:本会话费用、预算图框、官方余额、自定义 Provider 余额查询、Coding Plan 额度查询、历史记录,支持峰谷计价(切换前弹窗与系统通知提醒)与官方价格一键同步。",
+    "summary": "DeepSeek Harness \u4f1a\u8bdd\u8d39\u7528\u7edf\u8ba1:\u672c\u4f1a\u8bdd\u8d39\u7528\u3001\u9884\u7b97\u56fe\u6846\u3001\u5b98\u65b9\u4f59\u989d\u3001\u81ea\u5b9a\u4e49 Provider \u4f59\u989d\u67e5\u8be2\u3001Coding Plan \u989d\u5ea6\u67e5\u8be2\u3001\u5386\u53f2\u8bb0\u5f55,\u652f\u6301\u5cf0\u8c37\u8ba1\u4ef7(\u5207\u6362\u524d\u5f39\u7a97\u4e0e\u7cfb\u7edf\u901a\u77e5\u63d0\u9192)\u4e0e\u5b98\u65b9\u4ef7\u683c\u4e00\u952e\u540c\u6b65\u3002",
     "categories": [
-      "费用",
+      "\u8d39\u7528",
       "Web UI",
-      "观测"
+      "\u89c2\u6d4b"
     ],
     "surfaces": [
       "host",
@@ -188,7 +189,11 @@
     "src/client/api-equivalent-settings.js",
     "scripts/build-api-equivalent.mjs",
     "docs/api-equivalent-estimates.md",
-    "docs/pricing-coverage.json"
+    "docs/pricing-coverage.json",
+    "scripts/bundle-bases",
+    "docs/deepseek-timed-pricing.md",
+    "src/client/historical-estimate.js",
+    "docs/historical-total.md"
   ],
   "dependencies": {
     "acorn": "8.15.0",
@@ -200,7 +205,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Han-1413141/dsh-cost-meter.git"
+    "url": "git+https://github.com/DSH-Extensions-list/bharatcode-cost-meter.git"
   },
   "homepage": "https://github.com/Han-1413141/dsh-cost-meter#readme",
   "keywords": [
@@ -231,7 +236,7 @@
   ],
   "scripts": {
     "build": "node scripts/build-api-equivalent.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --import ./test/resolve-host.mjs --test test/*.test.mjs"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-credentials": "0.2.1-rc.1",
