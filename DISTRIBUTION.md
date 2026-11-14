@@ -1,6 +1,6 @@
 # Current compatibility update
 
-The source tree now builds version **1.9.39-english.20261114.rc3.1** for DeepSeek Harness **0.2.2-rc.3**. See [compatibility and verification](RC3-COMPATIBILITY.md). Earlier inventories and published release verification below describe historical snapshots only.
+The source tree now builds version **1.9.39-english.20261114.rc3.2** for DeepSeek Harness **0.2.2-rc.3**. See [compatibility and verification](RC3-COMPATIBILITY.md). Earlier inventories and published release verification below describe historical snapshots only.
 
 # Installed DSH package snapshot
 

@@ -1,6 +1,6 @@
 {
   "name": "@arzvaak/bharatcode-cost-meter",
-  "version": "1.9.39-english.20261114.rc3.1",
+  "version": "1.9.39-english.20261114.rc3.2",
   "description": "DeepSeek Harness \u4f1a\u8bdd\u8d39\u7528\u7edf\u8ba1\u63d2\u4ef6:\u672c\u4f1a\u8bdd\u6210\u672c\u3001\u5f53\u65e5\u8d39\u7528\u3001\u5386\u53f2\u8bb0\u5f55\u4e0e\u5b98\u65b9\u4ef7\u683c\u540c\u6b65,\u652f\u6301\u591a\u5382\u5546\u591a\u6a21\u578b\u4ef7\u683c\u8ba1\u8d39(\u5185\u7f6e 170+ \u6a21\u578b ID \u4ef7\u683c\u76ee\u5f55\u4e0e\u81ea\u52a8\u5339\u914d)\u3001\u4e3b\u6d41 Coding Plan \u8ba2\u9605\u989d\u5ea6\u67e5\u8be2\u4e0e\u663e\u793a(14 \u5bb6,\u542b WorkBuddy \u5b98\u65b9\u79ef\u5206\u3001OpenDesign \u5de5\u4f5c\u533a\u67e5\u8be2\u3001\u542b\u5c0f\u7c73 MiMo Token Plan \u63a7\u5236\u53f0 Cookie \u67e5\u8be2\u3001SCNet Token Plan \u672c\u5730 Credits \u8ba1\u91cf\u4e0e\u706b\u5c71\u65b9\u821f Volcano Ark Coding Plan AK/SK \u7b7e\u540d\u67e5\u8be2)\u3001\u81ea\u5b9a\u4e49 Provider \u4f59\u989d\u67e5\u8be2(\u53ef\u914d\u4efb\u610f HTTP \u7aef\u70b9)\u4e0e\u4f59\u989d\u8fdb\u5ea6\u6761\u3001\u5cf0\u8c37\u8ba1\u4ef7\u65f6\u6bb5\u663e\u793a\u4e0e\u5207\u6362\u524d\u5f39\u7a97/\u7cfb\u7edf\u901a\u77e5\u63d0\u9192(\u4f4d\u7f6e/\u63d0\u524d\u91cf/\u7c7b\u578b\u53ef\u914d),\u754c\u9762\u4e2d\u82f1\u53cc\u8bed\u3002Session cost tracking plugin for DeepSeek Harness: per-conversation cost, daily totals, history and official price sync, with multi-vendor model pricing (built-in 170+ model-ID catalog with auto-matching), Coding Plan quota queries & display for 14 vendors (incl. WorkBuddy official credits, OpenDesign workspace queries, Xiaomi MiMo Token Plan via console cookie, local credits metering for the SCNet Token Plan and Volcano Ark Coding Plan via AK/SK signature), plan/API dual-track billing with per-1% & full-window Token Plan usage estimates, custom provider balance lookup (configurable HTTP endpoint) and balance progress bar, plus peak/off-peak pricing display with pre-switch popup & system-notification alerts (position / lead time / type configurable), in a bilingual (Chinese/English) UI.",
   "type": "module",
   "main": "lib/bootstrap.timed.js",
@@ -200,8 +200,8 @@
     "zod": "4.6.6"
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-credentials": ">=0.2.0-rc.1 <0.3.0-0 || >=0.2.1-0 <0.3.0-0",
-    "@deepseek-ai/dsh-home-paths": ">=0.2.0-rc.1 <0.3.0-0 || >=0.2.1-0 <0.3.0-0"
+    "@deepseek-ai/dsh-credentials": ">=0.2.0-rc.1 <0.3.0-0 || >=0.2.1-0 <0.3.0-0 || >=0.2.2-rc.3 <0.2.3-0",
+    "@deepseek-ai/dsh-home-paths": ">=0.2.0-rc.1 <0.3.0-0 || >=0.2.1-0 <0.3.0-0 || >=0.2.2-rc.3 <0.2.3-0"
   },
   "repository": {
     "type": "git",
