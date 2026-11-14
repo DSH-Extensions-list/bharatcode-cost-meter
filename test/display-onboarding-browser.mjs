@@ -22,7 +22,7 @@ import React from ${JSON.stringify(req.resolve('react'))};import{createRoot}from
 const mainRequire=n=>n==='react'?React:n==='react-dom'?ReactDOM:{Tooltip:({children})=>children};mainRequire.async=async()=>window.noticeUI;
 window.__ModuleLoader__={load:m=>window.costUI=m.factory(mainRequire)};
 ${readFileSync('lib/client.js', 'utf8')}
-window.__ModuleLoader__={load:m=>{if(m.id!=='dsh-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.noticeUI=m.factory(n=>n==='react'?React:{})}};
+window.__ModuleLoader__={load:m=>{if(m.id!=='@arzvaak/bharatcode-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.noticeUI=m.factory(n=>n==='react'?React:{})}};
 ${readFileSync('lib/client.notices.js', 'utf8')}
 let state=${JSON.stringify(initial)};const params=new URL(location).searchParams,entries=new Map(),disposers=[],services={};
 const marker=params.get('marker');if(marker){const keys=marker.split('.');if(keys.length===2)state.config[keys[0]][keys[1]]=true;else state.config[marker]=true}

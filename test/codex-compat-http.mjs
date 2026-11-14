@@ -41,7 +41,7 @@ try {
       const subscription = host.plugin({ name: 'codex-subscription', apply() {} })
       await subscription.await()
       host.typert.register({ ...TYPERT, invocations: TYPERT.invocations.filter(def => !missing.includes(def.method)) })
-      const original = host.typert.getPackage('dsh-cost-meter')
+      const original = host.typert.getPackage('@arzvaak/bharatcode-cost-meter')
       // Fixture identity only: the production authentication policy is unchanged.
       const connection = new HostConnectionService(host, [], { isAuthenticated: () => true })
       if (Gateway.inject?.includes('remoteAccess')) await host.plugin((await imp('@deepseek-ai/dsh-api-remote-access')).default).await()
@@ -89,7 +89,7 @@ try {
       assert.equal(disabled.codexCompat.enabled, false, 'stopping the actual peer runtime hides its settings')
       assert.equal(disabled.codexCompat.promptDue, false, 'stopped peers never prompt')
       await plugin.dispose()
-      assert.equal(host.typert.getPackage('dsh-cost-meter'), original, 'does not replace the host-owned base manifest')
+      assert.equal(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'), original, 'does not replace the host-owned base manifest')
       assert.equal(host.typert.getPackage('dsh-cost-meter-codex-compat'), undefined, 'supplementary routes belong to the plugin lifetime')
       for (const method of missing) assert.equal(host.typert.local.get('costMeter/' + method), undefined)
       assert.deepEqual(errors, [])

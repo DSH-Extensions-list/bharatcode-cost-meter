@@ -1,6 +1,6 @@
 // Ordering belongs to the Display preview only. The live sidebar is presentation-only.
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.sidebar-order.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.sidebar-order.js',
   factory: () => {
     const validKey = key => typeof key === 'string' && /^(balance|customBalance|today|peak|models|go|budget|codex|(plan|gateway):[A-Za-z0-9_-]{1,100})$/.test(key)
     function move(order, visible, source, target, after) {

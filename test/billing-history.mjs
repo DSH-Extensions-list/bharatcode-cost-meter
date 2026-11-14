@@ -18,7 +18,7 @@ Date.now = () => now
 const tokens = { input: 100000, output: 20000, cacheRead: 50000, cacheWrite: 10000, reasoning: 2000 }
 const usage = Object.fromEntries(Object.entries(tokens).map(([key, n]) => [key + 'Tokens', n]))
 const rates = { cacheMiss: 2, output: 8, cacheHit: .5, cacheWrite: 3, reasoning: 1 }
-const config = sanitizeConfig({ prices: { providers: { fixture: { models: { model: rates } } } }, peakEnabled: false, exchangeRate: 7 })
+const config = sanitizeConfig({ prices: { providers: { fixture: { models: { model: rates } } } }, peakEnabled: false, currency:"CNY",fxRates:{USD:1,CNY:7,EUR:0.92},exchangeRate: 7 })
 const records = (id, time, step = 0) => [
   { type: 'session', id, createdAt: time - 100 },
   { type: 'request/header', seq: 0, time, data: { header: { config: { provider: 'fixture', model: 'model' } } } },

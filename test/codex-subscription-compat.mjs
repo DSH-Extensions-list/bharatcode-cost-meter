@@ -71,7 +71,7 @@ try {
   mkdirSync(emptyHome, { recursive: true })
 
   // 1a. 与本包同级的 node_modules(<root>/node_modules/dsh-cost-meter/lib/...) → package
-  const siblingModule = join(root, 'node_modules', 'dsh-cost-meter', 'lib', 'codex-subscription-compat.js')
+  const siblingModule = join(root, 'node_modules', '@arzvaak/bharatcode-cost-meter', 'lib', 'codex-subscription-compat.js')
   const siblingManifest = writeSubscriptionPackage(join(root, 'node_modules'), '1.2.3')
   const packageDetection = { installed: true, version: '1.2.3', detection: 'package', packagePath: siblingManifest }
   assert.deepEqual(
@@ -90,7 +90,7 @@ try {
   )
 
   // 1c. DSH_PROFILE_DIR / options.profileDir → profile
-  const repoLikeModule = join(root, 'plain-app', 'dsh-cost-meter', 'lib', 'codex-subscription-compat.js')
+  const repoLikeModule = join(root, 'plain-app', '@arzvaak/bharatcode-cost-meter', 'lib', 'codex-subscription-compat.js')
   const repoLikeUrl = pathToFileURL(repoLikeModule).href
   const profileDir = join(root, 'profile-scope')
   const profileManifest = writeSubscriptionPackage(join(profileDir, 'node_modules'), '2.0.0')

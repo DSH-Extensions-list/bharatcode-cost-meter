@@ -1,6 +1,6 @@
 /** Interactive display settings. Only local presentation components are mounted. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.display.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.display.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState } = React

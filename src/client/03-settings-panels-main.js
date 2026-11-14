@@ -17,7 +17,7 @@
     function BillingAccuracyNote({ state }) {
       const meter = state?.billionContext
       if (!meter || !(meter.unresolved > 0 || ['needs_update', 'changed', 'bridge_missing'].includes(meter.compatibility))) return null
-      return el('p', { className: 'cm-note', 'data-billing-accuracy': 'billion-context' }, resolveLocale(state.config) === 'en'
+      return el('p', { className: 'cm-note', 'data-billing-accuracy': 'billion-context' }, true
         ? 'Some billion-context usage records are incomplete; cost totals may differ from the provider bill.'
         : 'billion-context 部分用量记录不完整，费用统计可能存在偏差。')
     }
@@ -704,10 +704,10 @@
 
     /** 窗口短标签(本地化;未知窗口名原样展示)。 */
     function planWindowLabelOf(wk, locale) {
-      if (wk === 'fiveHour') return locale === 'en' ? '5-hour' : '5 小时'
-      if (wk === 'weekly') return locale === 'en' ? 'This week' : '本周'
-      if (wk === 'monthly') return locale === 'en' ? 'This month' : '本月'
-      if (wk === 'daily') return locale === 'en' ? 'Today' : '当日'
+      if (wk === 'fiveHour') return true ? '5-hour' : '5 小时'
+      if (wk === 'weekly') return true ? 'This week' : '本周'
+      if (wk === 'monthly') return true ? 'This month' : '本月'
+      if (wk === 'daily') return true ? 'Today' : '当日'
       return wk
     }
     /** Plan 提供商显示名(复用额度面板的 labelKey;Go 单独)。 */
@@ -776,7 +776,7 @@
         // 方法标注附估算基准时刻(采样差分 = 最近有效区间终点;live/无样本不标)。
         let tag = methodRawOf(win)
         if (win.method === 'sample' && Number(win.sampleAt) > 0) {
-          tag = t('planStatsMethodSampleAt', { method: tag, time: new Date(Number(win.sampleAt)).toLocaleString(locale === 'en' ? 'en-US' : 'zh-CN') })
+          tag = t('planStatsMethodSampleAt', { method: tag, time: new Date(Number(win.sampleAt)).toLocaleString(true ? 'en-US' : 'zh-CN') })
         }
         // 低置信(差分跨度 Δp < 5 或 live 回退):百分比读数个位量化下波动大,附标注。
         if ((win.method === 'sample' || win.method === 'live') && win.confidence === 'low') {
@@ -791,7 +791,7 @@
         el('td', { className: 'num' }, estTextOf(win)),
         el('td', { className: 'num' }, fullTextOf(win)),
         el('td', { className: 'num cm-plan-reset' },
-          win.resetsAt.length > 0 ? t('planStatsResets', { time: new Date(win.resetsAt).toLocaleString(locale === 'en' ? 'en-US' : 'zh-CN') }) : '—'),
+          win.resetsAt.length > 0 ? t('planStatsResets', { time: new Date(win.resetsAt).toLocaleString(true ? 'en-US' : 'zh-CN') }) : '—'),
         el('td', { className: 'cm-plan-method' }, methodTagOf(win)))
       // 曲线数据:全部已启用厂商的采样区间按粒度聚合。
       const curveBuckets = open
@@ -824,7 +824,7 @@
                       // 绝不能用 Date.now() 伪造「刚刚更新」。
                       (() => {
                         const ts = Number(providers[providerId]?.generatedAt) || Number(planStats?.generatedAt) || 0
-                        return ts > 0 ? new Date(ts).toLocaleTimeString(locale === 'en' ? 'en-US' : 'zh-CN') : ''
+                        return ts > 0 ? new Date(ts).toLocaleTimeString(true ? 'en-US' : 'zh-CN') : ''
                       })())),
                   el('table', { className: 'cm-table' },
                     el('thead', null, el('tr', null,
@@ -1166,8 +1166,8 @@
                 value: entry[field] ?? '',
                 onChange: event => setField(field, event.target.value),
               }))),
-            el('label', { className: 'cm-field' }, el('span', null, resolveLocale(config) === 'en' ? 'Dashboard link (optional)' : '跳转链接（可选）'),
-              el('input', { className: 'cm-input', type: 'url', 'aria-label': resolveLocale(config) === 'en' ? 'Dashboard link' : '跳转链接', value: entry.dashboardUrl ?? '', placeholder: 'https://example.com/account', onChange: event => setField('dashboardUrl', event.target.value) })),
+            el('label', { className: 'cm-field' }, el('span', null, true ? 'Dashboard link (optional)' : '跳转链接（可选）'),
+              el('input', { className: 'cm-input', type: 'url', 'aria-label': true ? 'Dashboard link' : '跳转链接', value: entry.dashboardUrl ?? '', placeholder: 'https://example.com/account', onChange: event => setField('dashboardUrl', event.target.value) })),
             !fixedAdapter && el('div', { className: 'cm-field' },
               el('label', null, t('customBalanceUnitLabel')),
               el('select', {
@@ -1520,7 +1520,7 @@
         }
         const m = new Date(end)
         m.setDate(m.getDate() - (w * 7 + 6))
-        monthLabels.push(m.getMonth() !== lastMonth ? (locale === 'en' ? EN_MONTHS[m.getMonth()] : String(m.getMonth() + 1) + '月') : '')
+        monthLabels.push(m.getMonth() !== lastMonth ? (true ? EN_MONTHS[m.getMonth()] : String(m.getMonth() + 1) + '月') : '')
         lastMonth = m.getMonth()
       }
       const maxDay = Math.max(...columns.map(x => x.tokens), 1)
@@ -1750,7 +1750,7 @@
       // 设置页标签(issue #29):按用途分五组,切换只改可见分区,不拆配置模型与保存逻辑。
       const tabItems = [
         ['overview', t('tabOverview')],
-        ['statistics', locale === 'en' ? 'Cost statistics' : '计费统计'],
+        ['statistics', true ? 'Cost statistics' : '计费统计'],
         ['quotas', t('tabQuotas')],
         ['usage', t('tabUsage')],
         ['pricing', t('tabPricing')],
@@ -1783,6 +1783,7 @@
         tab === 'statistics' ? el(BillingStatistics, { state, api, autoExport: activeTab === 'export' }) : null,
         // ── 概览:汇总卡片、今日会话、预算、官方余额 ──
         tab === 'overview' ? el(Fragment, { key: 'overview' },
+        el(BillingStatistics,{state,api,load:api.loadCustom,mode:'history'}),
         // 汇总卡片(今日卡片受 hideTodayCost 门控,issue #46;金额为真金白银口径,issue #64)
         el('div', { className: 'cm-overview-grid' },
         el('div', { className: 'cm-cards', style: { '--cm-overview-count': config.hideTodayCost === true ? 2 : 3 } },
@@ -1842,7 +1843,7 @@
         el(BillingStatistics, { state, api, load: api.loadPricing, mode: 'billing', draft, setDraft, locale }),
         // 今日会话
         el('div', null,
-          el('button', { className: 'cm-btn', onClick: () => setTab('export') }, locale === 'en' ? 'Export cost records' : '导出费用记录'),
+          el('button', { className: 'cm-btn', onClick: () => setTab('export') }, true ? 'Export cost records' : '导出费用记录'),
           el('h3', { className: 'cm-h' }, t('todaySessions')),
           el(TodaySessions, { state, t })),
         // 预算
@@ -1920,10 +1921,10 @@
         // ── 价格:峰谷计价、价格表、模型名匹配、官方价格同步、OpenRouter 公开报价 ──
         tab === 'pricing' ? el('div', { key: 'pricing', className: 'cm-pricing-page' },
         el('div', { className: 'cm-pricing-heading' },
-          el('div', null, el('h3', { className: 'cm-h' }, locale === 'en' ? 'Pricing' : '价格设置'), el('p', { className: 'cm-note' }, locale === 'en' ? 'New prices apply to future calls. Historical costs keep their original rates.' : '价格修改用于后续调用，历史费用沿用原价格。')),
-          el('span', { className: 'cm-pricing-unit' }, locale === 'en' ? 'Per 1M tokens' : '每百万 Token')),
-        el('div', { className: 'cm-pricing-nav', role: 'tablist', 'aria-label': locale === 'en' ? 'Pricing sections' : '价格分区' },
-          [['models', '模型定价', 'Model pricing'], ['catalog', '参考价格表', 'Price tables'], ['tools', '同步与规则', 'Sync & rules']].map(([key, zh, en]) => el('button', { key, id: 'cm-pricing-' + key, type: 'button', role: 'tab', 'aria-selected': pricingView === key, 'aria-controls': 'cm-pricing-panel', tabIndex: pricingView === key ? 0 : -1, className: 'cm-pricing-nav-item' + (pricingView === key ? ' active' : ''), onClick: () => setPricingView(key), onKeyDown: event => { const keys = ['models', 'catalog', 'tools']; const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0; if (step) { event.preventDefault(); const next = keys[(keys.indexOf(key) + step + 3) % 3]; setPricingView(next); event.currentTarget.parentElement.querySelector('#cm-pricing-' + next)?.focus() } } }, locale === 'en' ? en : zh))),
+          el('div', null, el('h3', { className: 'cm-h' }, true ? 'Pricing' : '价格设置'), el('p', { className: 'cm-note' }, true ? 'New prices apply to future calls. Historical costs keep their original rates.' : '价格修改用于后续调用，历史费用沿用原价格。')),
+          el('span', { className: 'cm-pricing-unit' }, true ? 'Per 1M tokens' : '每百万 Token')),
+        el('div', { className: 'cm-pricing-nav', role: 'tablist', 'aria-label': true ? 'Pricing sections' : '价格分区' },
+          [['models', '模型定价', 'Model pricing'], ['catalog', '参考价格表', 'Price tables'], ['tools', '同步与规则', 'Sync & rules']].map(([key, zh, en]) => el('button', { key, id: 'cm-pricing-' + key, type: 'button', role: 'tab', 'aria-selected': pricingView === key, 'aria-controls': 'cm-pricing-panel', tabIndex: pricingView === key ? 0 : -1, className: 'cm-pricing-nav-item' + (pricingView === key ? ' active' : ''), onClick: () => setPricingView(key), onKeyDown: event => { const keys = ['models', 'catalog', 'tools']; const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0; if (step) { event.preventDefault(); const next = keys[(keys.indexOf(key) + step + 3) % 3]; setPricingView(next); event.currentTarget.parentElement.querySelector('#cm-pricing-' + next)?.focus() } } }, true ? en : zh))),
         el('div', { id: 'cm-pricing-panel', className: 'cm-pricing-content', role: 'tabpanel', 'aria-labelledby': 'cm-pricing-' + pricingView },
         pricingView === 'models' ?
         el(BillingStatistics, { state, api, load: api.loadPricing, mode: 'matching', draft, setDraft, t, locale, resolveClientPrice, prettyProviderKey, setField, priceEditor: { PriceInput, priceFactor, setPriceFactor, multiplierOptions, priceMultiplierSettings, priceAt } }) : null,
@@ -2102,6 +2103,9 @@
         return pages[name]
       }
       const api = {
+        loadCustom: () => loadPage('custom'),
+        getHistoricalEstimate: () => call('getHistoricalEstimate'),
+        recalculateHistoricalEstimate: () => call('recalculateHistoricalEstimate'),
         loadBillingStorage: () => loadPage('billing-storage'),
         billingStorage: async options => call('billingStorage', [billingStorageOptionsCodec.parse(options)]),
         loadSettingsOverview: () => loadPage('settings-overview'),
@@ -2188,7 +2192,7 @@
 
       const injected = () => ({ hooks: { cost: store }, api })
       slots.inject('plugins.bundle.config', () => slots.register({
-        name: 'plugins.bundle.config', key: 'dsh-cost-meter', inject: injected,
+        name: 'plugins.bundle.config', key: '@arzvaak/bharatcode-cost-meter', inject: injected,
       }, CostSection))
       // 标题栏费用明细入口;输入区下方入口由会话费用行(DockLine)自身承载,整行可点击,不重复注册。
       slots.inject('conversation.session.header.actions', () => slots.register({ name: 'conversation.session.header.actions', id: 'cost-meter-statistics', order: 1, inject: injected }, SessionStatisticsButton))
@@ -2263,7 +2267,7 @@
       // 设置页「费用/Cost」分节:语言变化时撤销旧注册并重建,让侧边栏标签同步。
       const sectionActive = slotActive()
       const registerSection = locale => {
-        registerSlot(sectionActive, 'settings.section', { name: 'settings.section', id: 'cost-meter', order: 30, label: locale === 'en' ? MESSAGES.en.sectionLabel : MESSAGES.zh.sectionLabel, inject: injected }, SETTINGS_DISPLAY_ONLY ? CostOverview : CostSection, true)
+        registerSlot(sectionActive, 'settings.section', { name: 'settings.section', id: 'cost-meter', order: 30, label: true ? MESSAGES.en.sectionLabel : MESSAGES.zh.sectionLabel, inject: injected }, SETTINGS_DISPLAY_ONLY ? CostOverview : CostSection, true)
       }
       // Token 用量统计「通用设置」行(position = general 时,注入宿主通用设置页的 settings.general.item 插槽)。
       const generalUsageActive = slotActive()
@@ -2273,7 +2277,7 @@
       // Token 用量统计「独立分节」(position = section 时,像「费用」一样拥有自己的设置导航项)。
       const usageSectionActive = slotActive()
       const registerUsageSection = (enabled, locale) => {
-        registerSlot(usageSectionActive, 'settings.section', { name: 'settings.section', id: 'cost-meter-usage', order: 31, label: locale === 'en' ? MESSAGES.en.usageSectionLabel : MESSAGES.zh.usageSectionLabel, inject: injected }, UsagePanel, enabled)
+        registerSlot(usageSectionActive, 'settings.section', { name: 'settings.section', id: 'cost-meter-usage', order: 31, label: true ? MESSAGES.en.usageSectionLabel : MESSAGES.zh.usageSectionLabel, inject: injected }, UsagePanel, enabled)
       }
       let lastPosition = null
       let lastFooter = null
@@ -2340,6 +2344,7 @@
       return stopSync
     }
 
+    exports.__testBilling = {decodeUsage:parseUsageFields,mergeSessionUsage,resolveClientPrice};
     exports.apply = apply
     exports.inject = inject
     return module.exports

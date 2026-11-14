@@ -72,7 +72,7 @@ assert.ok(runtime.length > 1000, 'injected stylesheet is the full client CSS')
 
 // ── A. 已有**旧内容**的同 id 样式表:必须更新(热更新场景,修复的核心) ────────
 {
-  const stale = { dataset: { plugin: 'dsh-cost-meter', pluginCss: 'dsh-cost-meter/client.css' }, textContent: '/* previous release */' }
+  const stale = { dataset: { plugin: '@arzvaak/bharatcode-cost-meter', pluginCss: 'dsh-cost-meter/client.css' }, textContent: '/* previous release */' }
   const { node, appended } = inject({ existing: stale })
   assert.equal(node.textContent, runtime, 'a stale stylesheet must be refreshed to the current CSS (HMR: the dialog would otherwise lose its rules)')
   assert.equal(appended.length, 0, 'refreshing must reuse the existing node, not append a duplicate')
@@ -81,7 +81,7 @@ assert.ok(runtime.length > 1000, 'injected stylesheet is the full client CSS')
 
 // ── B. 已有**相同内容**的样式表:复用,不重复插入,也不重写 ──────────────────
 {
-  const same = { dataset: { plugin: 'dsh-cost-meter', pluginCss: 'dsh-cost-meter/client.css' }, textContent: runtime }
+  const same = { dataset: { plugin: '@arzvaak/bharatcode-cost-meter', pluginCss: 'dsh-cost-meter/client.css' }, textContent: runtime }
   const before = same.textContent
   const { node, appended } = inject({ existing: same })
   assert.equal(appended.length, 0, 'an up-to-date stylesheet is not duplicated')

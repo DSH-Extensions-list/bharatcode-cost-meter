@@ -6,7 +6,7 @@
 export function registerCostMeterClient(registration) {
   const loader = window.__ModuleLoader__
   const wrapper = loader[Symbol.for('@dsh-plugin/dsh-loader:load-wrap')]
-  const load = registration.id === 'dsh-cost-meter' && loader.load === wrapper?.ours && typeof wrapper.original === 'function'
+  const load = registration.id === '@arzvaak/bharatcode-cost-meter' && loader.load === wrapper?.ours && typeof wrapper.original === 'function'
     ? wrapper.original : loader.load
   return load.call(loader, registration)
 }

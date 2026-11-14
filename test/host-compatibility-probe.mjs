@@ -14,7 +14,7 @@ export async function apply(ctx) {
   const profile = process.env.CM_COMPAT_PROFILE ?? 'web'
   assert.ok(['web', 'desktop'].includes(profile))
   const profileRequire = createRequire(join(home, 'profiles', profile, 'package.json'))
-  const pluginRequire = createRequire(profileRequire.resolve('dsh-cost-meter'))
+  const pluginRequire = createRequire(profileRequire.resolve('@arzvaak/bharatcode-cost-meter'))
   const hostRequire = createRequire(resolve(process.env.CM_HOST_PACKAGE))
   const installMode = process.env.CM_COMPAT_INSTALL_MODE === 'linked' ? 'linked' : 'packed'
   const peers = {}

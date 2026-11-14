@@ -3,7 +3,7 @@
  *  DSH STORE 256 KiB per-file bound. Text lives here as local zh/en pairs instead of the
  *  main bundle MESSAGES table (the main table would be billed against client.js). */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.codex.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.codex.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState, useEffect, useRef } = React

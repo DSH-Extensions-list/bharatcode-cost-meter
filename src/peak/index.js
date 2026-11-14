@@ -1,6 +1,6 @@
 /** Local-only peak-period progress and scheduled pricing alerts. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.peak.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.peak.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState, useEffect, Fragment } = React

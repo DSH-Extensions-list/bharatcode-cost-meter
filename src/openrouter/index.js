@@ -1,6 +1,6 @@
 /** Read-only OpenRouter prices, loaded by Prices settings or the composer model picker. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.openrouter.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.openrouter.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState, useEffect, useRef } = React
@@ -17,9 +17,9 @@ window.__ModuleLoader__.load({
     const schema = { parse: parseCatalog }
     const CONTRIBUTION = {
       package: 'dsh-cost-meter-openrouter', face: 'host', descriptors: [{
-        id: 'dsh-cost-meter#costMeter/getOpenRouterCatalog', service: 'costMeter', namespace: 'costMeter', method: 'getOpenRouterCatalog',
+        id: '@arzvaak/bharatcode-cost-meter#costMeter/getOpenRouterCatalog', service: 'costMeter', namespace: 'costMeter', method: 'getOpenRouterCatalog',
         invocation: { kind: 'direct' }, parameters: [],
-        result: { mode: 'strict', typeSymbol: 'dsh-cost-meter#OpenRouterCatalog', schema, create: () => schema },
+        result: { mode: 'strict', typeSymbol: '@arzvaak/bharatcode-cost-meter#OpenRouterCatalog', schema, create: () => schema },
       }],
     }
     const modelUrl = id => 'https://openrouter.ai/' + id.split('/').map(encodeURIComponent).join('/')

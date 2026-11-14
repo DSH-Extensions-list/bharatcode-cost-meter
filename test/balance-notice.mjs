@@ -17,7 +17,7 @@ import React from ${JSON.stringify(req.resolve('react'))};import{createRoot}from
 const require=n=>n==='react'?React:n==='react-dom'?ReactDOM:{Tooltip:({children})=>children};
 require.async=async()=>{window.loads=(window.loads||0)+1;if(window.failLoad){window.failLoad=false;throw Error('chunk unavailable')}return window.notice};
 window.__ModuleLoader__={load:m=>window.main=m.factory(require)};${source}
-window.__ModuleLoader__={load:m=>{if(m.id!=='dsh-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.notice=m.factory(require)}};${readFileSync('src/notices/index.js', 'utf8')}
+window.__ModuleLoader__={load:m=>{if(m.id!=='@arzvaak/bharatcode-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.notice=m.factory(require)}};${readFileSync('src/notices/index.js', 'utf8')}
 window.calls=0;window.patches=[];window.intercepts=0;window.config=window.initialConfig||${JSON.stringify(config)};
 for(const type of ['pointerdown','pointerup','click','touchstart'])document.addEventListener(type,e=>{if(e.target.closest('.cm-qguide')){window.intercepts++;e.stopPropagation()}},true);
 const root=createRoot(document.getElementById('root'));let generation=0;

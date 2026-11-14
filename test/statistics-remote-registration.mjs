@@ -163,7 +163,7 @@ try {
     // Negative control uses the original conflicting identity with the real
     // registry; keep this check in CI without requiring historical Git tags.
     const identity = statistics.CONTRIBUTION.package
-    statistics.CONTRIBUTION.package = 'dsh-cost-meter'
+    statistics.CONTRIBUTION.package = '@arzvaak/bharatcode-cost-meter'
     await assert.rejects(first.api.loadStatistics(), /Remote package "dsh-cost-meter" is already registered/)
     statistics.CONTRIBUTION.package = identity
     const [Page, samePage] = await Promise.all([first.api.loadStatistics(), first.api.loadStatistics()])

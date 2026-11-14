@@ -12,7 +12,7 @@ const React = req('react')
 const hostFile = process.env.DSH_TEST_CLIENT_MODULES ?? join(dirname(req.resolve('@deepseek-ai/dsh-client-modules/package.json')), 'lib/client.js')
 assert.ok(process.env.DSH_TEST_DSH_LOADER, 'provide the actual dsh-loader lib/client.js')
 const hostSource = readFileSync(hostFile, 'utf8'), shimSource = readFileSync(process.env.DSH_TEST_DSH_LOADER, 'utf8')
-const owner = 'dsh-cost-meter', files = ['client.js', ...readdirSync('lib').filter(name => /^client\..+\.js$/.test(name))]
+const owner = '@arzvaak/bharatcode-cost-meter', files = ['client.js', ...readdirSync('lib').filter(name => /^client\..+\.js$/.test(name))]
 const sources = new Map(files.map(file => [file, readFileSync(join('lib', file), 'utf8')]))
 const wrapKey = Symbol.for('@dsh-plugin/dsh-loader:load-wrap')
 const seed = { react: React, 'react-dom': { createPortal: children => children }, 'react-dom/client': {}, '@deepseek-ai/dsh-client-ui-primitives': { Tooltip: () => null } }
@@ -47,7 +47,7 @@ function fixture(protocol = 'dsh-app://app') {
   const f = fixture()
   f.facade.load({ id: owner, factory: () => ({}) })
   f.install()
-  assert.throws(() => f.run("window.__ModuleLoader__.load({id:'dsh-cost-meter',chunk:'client.sidebar-order.js',factory:()=>({})})"), /duplicate factory registration for "dsh-cost-meter"/)
+  assert.throws(() => f.run("window.__ModuleLoader__.load({id:'@arzvaak/bharatcode-cost-meter',chunk:'client.sidebar-order.js',factory:()=>({})})"), /duplicate factory registration for "dsh-cost-meter"/)
   f.facade.load({ id: 'async-probe', factory: require => typeof require.async })
   assert.equal(await f.system.import('async-probe'), 'undefined', 'actual shim also drops require.async')
 }
@@ -55,7 +55,7 @@ function fixture(protocol = 'dsh-app://app') {
 {
   const f = fixture(); f.install()
   const wrapped = f.facade.load
-  f.run(withClientRegistration("window.__ModuleLoader__.load({id:'dsh-cost-meter',factory:require=>({load:require.async})})"))
+  f.run(withClientRegistration("window.__ModuleLoader__.load({id:'@arzvaak/bharatcode-cost-meter',factory:require=>({load:require.async})})"))
   const entry = await f.system.import(owner)
   assert.equal(typeof entry.load, 'function')
   assert.equal(typeof (await entry.load('./client.sidebar-order.js')).mount, 'function')

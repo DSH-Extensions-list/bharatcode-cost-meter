@@ -187,7 +187,7 @@ try {
 
   const siblingRoot = temp('cm-compat-sibling-')
   writePackage(siblingRoot, BETTER_SESSION_PACKAGE, '0.1.8')
-  const siblingModule = join(siblingRoot, 'node_modules', 'dsh-cost-meter', 'lib', 'session-storage-compat.js')
+  const siblingModule = join(siblingRoot, 'node_modules', '@arzvaak/bharatcode-cost-meter', 'lib', 'session-storage-compat.js')
   const siblingHit = detectBetterSessionInstall({ moduleUrl: siblingModule, env: {} })
   assert.equal(siblingHit.betterSession.installed, true)
   assert.equal(siblingHit.betterSession.detection, 'package')

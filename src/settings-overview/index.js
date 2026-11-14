@@ -1,7 +1,7 @@
 // Future settings display page. Reads the shared snapshots; no configuration draft,
 // credential API, history operation or separate cost-meter poller lives here.
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.settings-overview.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.settings-overview.js',
   factory: require => {
     const { createElement: el, Fragment } = require('react')
 

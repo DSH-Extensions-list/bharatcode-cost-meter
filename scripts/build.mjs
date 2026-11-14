@@ -65,7 +65,9 @@ let src = fragments.map(name => readFileSync(resolve(clientDir, name), 'utf8')).
 // This leaves source translations readable and frees space for turn details.
 const messagesMatch = src.match(/const MESSAGES = (\{[\s\S]*?\n    \})\s*\n/)
 if (!messagesMatch) throw new Error('client messages source not found')
-const messages = runInNewContext(`(${messagesMatch[1]})`, Object.create(null), { timeout: 1000 })
+const originalMessages = runInNewContext(`(${messagesMatch[1]})`, Object.create(null), { timeout: 1000 })
+// This distribution explicitly uses English; retain the full upstream translations in source.
+const messages = {en:originalMessages.en}
 const messageKeys = [...new Set(Object.values(messages).flatMap(dict => Object.keys(dict)))]
 // One separator replaces the quotes/commas around each key and translation.
 // Pick an unused ASCII character and round-trip the complete dictionaries before
@@ -150,13 +152,13 @@ for (const phrase of ['var(--dsw-alias-', '.cm-', 'background:', 'align-items:',
 const cssCandidates = [...cssCounts].filter(([, count]) => count >= 2).sort((a, b) =>
   (Buffer.byteLength(b[0]) - 2) * (b[1] - 1) - (Buffer.byteLength(a[0]) - 2) * (a[1] - 1) || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
 const cssPhrases = [], cssTokenBase = 0x0180
-const cssTokenRange = `[${String.fromCharCode(cssTokenBase)}-${String.fromCharCode(cssTokenBase + 127)}]`
+const cssTokenRange = `[${String.fromCharCode(cssTokenBase)}-${String.fromCharCode(cssTokenBase + 255)}]`
 assert.ok(!new RegExp(cssTokenRange).test(compactCss), 'CSS packing markers must be unused')
 let packedCss = compactCss
 // Greedy by measured saving: each round re-counts every candidate in the already
 // packed text (earlier tokens change later counts) and takes the largest positive
 // net gain. Ties keep the deterministic candidate order above.
-while (cssPhrases.length < 128) {
+while (cssPhrases.length < 256) {
   let best = null, bestGain = 0
   for (const [phrase] of cssCandidates) {
     const count = packedCss.split(phrase).length - 1, bytes = Buffer.byteLength(phrase)
@@ -180,7 +182,7 @@ const result = await transform(withClientRegistration(src), {
   charset: 'utf8',
 })
 // Separate the registration IIFE from any preceding script in a combined bundle.
-const header = '// Generated from src/client/*.js by node scripts/build.mjs; do not edit.\n;'
+const header = '// Generated client.\n;'
 const outPath = resolve(projectRoot, 'lib/client.js')
 writeFileSync(outPath, header + result.code)
 // 字节口径与 test/verify.mjs 的门禁一致(UTF-8 字节而非 UTF-16 字符数,中文文案算多字节)。
@@ -194,7 +196,7 @@ console.log('✓ lib/client.js within DSH STORE per-file bound (262144)')
 
 // DSH 0.2.0-rc.2 package-local chunks use the host's require.async contract.
 // Each on-demand screen has readable source and a bounded runtime asset.
-for (const chunk of ['billing-storage', 'settings-overview', 'statistics', 'openrouter', 'community', 'pricing', 'display', 'codex', 'peak', 'session-list', 'sidebar-order', 'plan-settings', 'notices', 'local-savings']) {
+for (const chunk of ['billing-storage', 'settings-overview', 'statistics', 'openrouter', 'community', 'pricing', 'display', 'codex', 'peak', 'session-list', 'sidebar-order', 'plan-settings', 'notices', 'local-savings', 'custom']) {
   let source = readFileSync(resolve(projectRoot, `src/${chunk}/index.js`), 'utf8')
   if (['peak', 'display', 'pricing'].includes(chunk)) source = source.replace('factory: require => {', 'factory: require => {\n' + readFileSync(resolve(projectRoot, 'lib/peak-timezone.js'), 'utf8').replace(/^export /gm, '') + (chunk === 'peak' ? '' : readFileSync(resolve(projectRoot, 'src/peak/timezone-control.js'), 'utf8')))
   if (chunk === 'pricing') source = source.replace('/* PEAK_PANEL_SOURCE */', readFileSync(resolve(projectRoot, 'src/pricing/peak-panel.js'), 'utf8'))
@@ -214,7 +216,7 @@ for (const chunk of ['billing-storage', 'settings-overview', 'statistics', 'open
   }
   let registration
   runInNewContext(source, { window: { __ModuleLoader__: { load: value => { registration = value } } } })
-  assert.equal(registration?.id, 'dsh-cost-meter', `${chunk}: wrong client owner`)
+  assert.equal(registration?.id, '@arzvaak/bharatcode-cost-meter', `${chunk}: wrong client owner`)
   assert.equal(registration?.chunk, `client.${chunk}.js`, `${chunk}: missing or incorrect chunk registration`)
   const result = await transform(withClientRegistration(source), { minify: true, target: 'es2022', charset: 'utf8', legalComments: 'none' })
   const code = ';' + result.code

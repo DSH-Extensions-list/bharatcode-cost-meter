@@ -36,14 +36,14 @@ try {
     } }],
   })
   const { Context, Service, Registry, Gateway, applyClient, validateTypertManifest } = await import(pathToFileURL(outfile).href)
-  assert.ok(validateTypertManifest('dsh-cost-meter', TYPERT))
+  assert.ok(validateTypertManifest('@arzvaak/bharatcode-cost-meter', TYPERT))
   const withoutFactory = codec => { const { create, ...old } = codec; return old }
   for (const descriptor of TYPERT.invocations) {
     for (const broken of [
       { ...descriptor, result: withoutFactory(descriptor.result) },
       ...descriptor.parameters.map((_, index) => ({ ...descriptor, parameters: descriptor.parameters.map((p, i) => i === index ? { ...p, codec: withoutFactory(p.codec) } : p) })),
     ]) {
-      assert.throws(() => validateTypertManifest('dsh-cost-meter', { ...TYPERT, invocations: [broken] }), /no create\(\) factory/, 'negative control reproduces the reported startup failure')
+      assert.throws(() => validateTypertManifest('@arzvaak/bharatcode-cost-meter', { ...TYPERT, invocations: [broken] }), /no create\(\) factory/, 'negative control reproduces the reported startup failure')
     }
   }
   const host = new Context(), client = new Context()

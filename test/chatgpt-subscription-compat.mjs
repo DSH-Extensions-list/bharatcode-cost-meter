@@ -100,7 +100,7 @@ try {
   mkdirSync(emptyHome, { recursive: true })
 
   // 1a. 与本包同级的 node_modules:<node_modules>/@scope/name/lib/xx.js → package
-  const siblingModule = join(root, 'node_modules', 'dsh-cost-meter', 'lib', 'chatgpt-subscription-compat.js')
+  const siblingModule = join(root, 'node_modules', '@arzvaak/bharatcode-cost-meter', 'lib', 'chatgpt-subscription-compat.js')
   const siblingManifest = writeScopedPackage(join(root, 'node_modules'), '0.26.1')
   const packageDetection = { installed: true, version: '0.26.1', detection: 'package', packagePath: siblingManifest }
   assert.deepEqual(
@@ -124,7 +124,7 @@ try {
   )
 
   // 1c. DSH_PROFILE_DIR / options.profileDir → profile
-  const repoLikeModule = join(root, 'plain-app', 'dsh-cost-meter', 'lib', 'chatgpt-subscription-compat.js')
+  const repoLikeModule = join(root, 'plain-app', '@arzvaak/bharatcode-cost-meter', 'lib', 'chatgpt-subscription-compat.js')
   const repoLikeUrl = pathToFileURL(repoLikeModule).href
   const profileDir = join(root, 'profile-scope')
   const profileManifest = writeScopedPackage(join(profileDir, 'node_modules'), '2.0.0')
@@ -200,7 +200,7 @@ try {
   const codexDir = join(isoNodeModules, 'dsh-codex-subscription')
   mkdirSync(codexDir, { recursive: true })
   writeFileSync(join(codexDir, 'package.json'), JSON.stringify({ name: 'dsh-codex-subscription', version: '1.2.3' }))
-  const isoModule = join(isoNodeModules, 'dsh-cost-meter', 'lib', 'x.js')
+  const isoModule = join(isoNodeModules, '@arzvaak/bharatcode-cost-meter', 'lib', 'x.js')
   assert.deepEqual(
     detectChatgptSubscription({ moduleUrl: pathToFileURL(isoModule).href, env: {}, homeDir: emptyHome }),
     NOT_INSTALLED,

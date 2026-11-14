@@ -1,6 +1,6 @@
 /** Session row amounts, loaded only when enabled. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.session-list.js', factory: require => {
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.session-list.js', factory: require => {
     const React = require('react'), { createElement: el, useEffect, useRef, useSyncExternalStore } = React
     const number = value => { if (typeof value !== 'number' || !Number.isFinite(value)) throw Error('Invalid session amount'); return value }
     const string = value => { if (typeof value !== 'string') throw Error('Invalid session identity'); return value }
@@ -17,8 +17,8 @@ window.__ModuleLoader__.load({
           ...Object.fromEntries(['apiCost', 'reasoning', 'costCny', 'apiCostCny', 'costEur', 'apiCostEur'].filter(key => row[key] !== undefined).map(key => [key, number(row[key])])) }
       })
     }
-    const codec = (name, parse) => { const schema = { parse }; return { mode: 'strict', typeSymbol: 'dsh-cost-meter#' + name, schema, create: () => schema } }
-    const CONTRIBUTION = { package: 'dsh-cost-meter-session-list', face: 'host', descriptors: [{ id: 'dsh-cost-meter#costMeter/getSessionListCosts', service: 'costMeter', namespace: 'costMeter', method: 'getSessionListCosts', invocation: { kind: 'direct' },
+    const codec = (name, parse) => { const schema = { parse }; return { mode: 'strict', typeSymbol: '@arzvaak/bharatcode-cost-meter#' + name, schema, create: () => schema } }
+    const CONTRIBUTION = { package: 'dsh-cost-meter-session-list', face: 'host', descriptors: [{ id: '@arzvaak/bharatcode-cost-meter#costMeter/getSessionListCosts', service: 'costMeter', namespace: 'costMeter', method: 'getSessionListCosts', invocation: { kind: 'direct' },
       parameters: [{ name: 'query', wire: 'query', source: 'json', codec: codec('SessionListQuery', parseQuery) }], result: codec('SessionListCosts', parseRows) }] }
 
     function createBatchReader(read, current) {

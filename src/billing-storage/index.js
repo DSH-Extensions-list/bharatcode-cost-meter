@@ -1,6 +1,6 @@
 // Loaded only when the user opens usage settings. No storage scan in the state poller.
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.billing-storage.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.billing-storage.js',
   factory: require => {
     const { createElement: el, useEffect, useRef, useState } = require('react')
     function BillingStorage({ state, api, draft, setDraft, locale, disabled }) {

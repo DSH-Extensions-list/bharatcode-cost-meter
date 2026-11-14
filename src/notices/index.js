@@ -1,6 +1,6 @@
 // One optional display introduction; billing/safety notices are deliberately separate.
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.notices.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.notices.js',
   factory(require) {
     const { createElement: el, useRef, useState, useEffect } = require('react')
     // Stable across releases. Existing dismissals mean “no more display introductions”.

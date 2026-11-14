@@ -34,7 +34,7 @@ try {
   writeFileSync(join(work, 'package.json'), '{"type":"module"}')
   const anchor = pathToFileURL(join(work, 'package.json')).href
   // Same resolution used by dshmarket's resolveProfileEntry (no real user profile).
-  const hotEntry = pathToFileURL(createRequire(anchor).resolve('dsh-cost-meter')).href
+  const hotEntry = pathToFileURL(createRequire(anchor).resolve('@arzvaak/bharatcode-cost-meter')).href
   const negativeEntry = pathToFileURL(join(work, 'no-registration.mjs')).href
   writeFileSync(fileURLToPath(negativeEntry), `
     export { TYPERT } from ${JSON.stringify(new URL('../lib/typert.host.js', import.meta.url).href)};
@@ -56,7 +56,7 @@ try {
       if (RemoteAccess) await host.plugin(RemoteAccess).await()
       await host.plugin(Gateway, {}).await()
       if (mode === 'already-registered') host.typert.register(TYPERT)
-      const existing = host.get('typert')?.getPackage('dsh-cost-meter')
+      const existing = host.get('typert')?.getPackage('@arzvaak/bharatcode-cost-meter')
       if (mode === 'stale-lock-cold') {
         const lock = join(work, 'storages', 'cost-meter', 'ledger.json.lock')
         mkdirSync(lock)
@@ -66,7 +66,7 @@ try {
         utimesSync(owner, old, old)
       }
       if (mode === 'cold' || mode === 'stale-lock-cold') {
-        await host.loader.root.update([{ id: 'cost-meter', name: 'dsh-cost-meter' }])
+        await host.loader.root.update([{ id: 'cost-meter', name: '@arzvaak/bharatcode-cost-meter' }])
         await host.loader.await()
       } else {
         const path = join(work, 'hot.json')
@@ -79,30 +79,30 @@ try {
       if (mode === 'unload-before-registry') {
         await hot.dispose()
         await host.plugin(Registry).await()
-        assert.equal(host.typert.getPackage('dsh-cost-meter'), undefined)
+        assert.equal(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'), undefined)
         assert.equal(host.get('costMeter'), undefined)
         continue
       }
       if (late) await host.plugin(Registry).await()
       if (mode === 'negative') {
         await new Promise(resolve => setImmediate(resolve))
-        assert.equal(host.typert.getPackage('dsh-cost-meter'), undefined)
+        assert.equal(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'), undefined)
         await assert.rejects(invokeState(),
           error => error.code === 'gateway/invocation-unavailable', 'negative control: standalone file entry has no RPC manifest')
         continue
       }
-      await settle(() => !!host.typert.getPackage('dsh-cost-meter'))
+      await settle(() => !!host.typert.getPackage('@arzvaak/bharatcode-cost-meter'))
       const state = await invokeState()
       assert.ok(state.config && state.today, `${mode}: real ledger RPC works without restart`)
-      if (existing) assert.equal(host.typert.getPackage('dsh-cost-meter'), existing)
+      if (existing) assert.equal(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'), existing)
       if (hot) {
         await hot.dispose()
         assert.equal(host.get('costMeter'), undefined)
-        assert.equal(host.typert.getPackage('dsh-cost-meter'), existing, 'unload removes only the plugin-owned manifest')
+        assert.equal(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'), existing, 'unload removes only the plugin-owned manifest')
         if (mode === 'hot') {
           hot = host.plugin(Include, { path: pathToFileURL(join(work, 'hot.json')).href })
           await hot.await()
-          await settle(() => !!host.typert.getPackage('dsh-cost-meter'))
+          await settle(() => !!host.typert.getPackage('@arzvaak/bharatcode-cost-meter'))
           assert.ok((await invokeState()).config)
         }
       }

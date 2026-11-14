@@ -1,6 +1,6 @@
 /** Community entry, loaded only when opening Cost settings. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.community.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.community.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState, useEffect } = React

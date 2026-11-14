@@ -1,6 +1,6 @@
 /** Billing history and read-only context cost composition, loaded on demand. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.statistics.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.statistics.js',
   factory: require => {
     const React = require('react')
     const { createElement: el, useState, useEffect, useRef, Fragment } = React
@@ -106,7 +106,7 @@ window.__ModuleLoader__.load({
       if (v.displayCurrency != null) { if (!['USD', 'CNY', 'EUR'].includes(v.displayCurrency)) throw Error('Invalid display currency'); q.displayCurrency = v.displayCurrency }
       return q
     }
-    const codec = (name, parse) => { const schema = { parse }; return { mode: 'strict', typeSymbol: 'dsh-cost-meter#' + name, schema, create: () => schema } }
+    const codec = (name, parse) => { const schema = { parse }; return { mode: 'strict', typeSymbol: '@arzvaak/bharatcode-cost-meter#' + name, schema, create: () => schema } }
     const parseExport = object({ id: string, status: string, filename: string, mime: string, totalBytes: number, offset: number, nextOffset: number, data: string, completedSessions: number, totalSessions: number, rows: number, message: string })
     const parseExportQuery = value => {
       const query = {}
@@ -117,15 +117,15 @@ window.__ModuleLoader__.load({
       return query
     }
     // Remote contributions have separate ownership from Host manifests. The main
-    // client already owns "dsh-cost-meter"; a lazy group needs its own identity.
+    // client already owns "@arzvaak/bharatcode-cost-meter"; a lazy group needs its own identity.
     // Endpoints and type symbols still match the original Host costMeter face.
     const CONTRIBUTION = { package: 'dsh-cost-meter/statistics', descriptors: [
       ['getBillingExport', 'BillingExport', parseExport, parseExportQuery],
       ['getSessionTrajectory', 'Trajectory', parseTrajectory, parseTrajectoryQuery],
       ['getBillingStatistics', 'BillingStatistics', parseStatistics], ['getSessionBilling', 'SessionBilling', parseDetail], ['getTurnInspection', 'TurnInspection', parseInspection, parseInspectionQuery], ['getCallInspection', 'CallInspection', parseCallInspection, parseCallInspectionQuery], ['getContextCosts', 'ContextCosts', parseContextCosts, parseContextCostsQuery],
-    ].map(([method, name, parse, queryParser]) => ({ id: 'dsh-cost-meter#costMeter/' + method, service: 'costMeter', namespace: 'costMeter', method, invocation: { kind: 'direct' },
+    ].map(([method, name, parse, queryParser]) => ({ id: '@arzvaak/bharatcode-cost-meter#costMeter/' + method, service: 'costMeter', namespace: 'costMeter', method, invocation: { kind: 'direct' },
       parameters: [{ name: 'query', wire: 'query', source: 'json', codec: codec(queryParser ? name + 'Query' : 'StatisticsQuery', queryParser ?? parseQuery) }], result: codec(name, parse) })).concat({
-        id: 'dsh-cost-meter#costMeter/getContextIntegration', service: 'costMeter', namespace: 'costMeter', method: 'getContextIntegration', invocation: { kind: 'direct' }, parameters: [], result: codec('ContextIntegration', parseIntegration),
+        id: '@arzvaak/bharatcode-cost-meter#costMeter/getContextIntegration', service: 'costMeter', namespace: 'costMeter', method: 'getContextIntegration', invocation: { kind: 'direct' }, parameters: [], result: codec('ContextIntegration', parseIntegration),
       }) }
 
     const css = `

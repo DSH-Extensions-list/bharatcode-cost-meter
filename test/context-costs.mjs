@@ -14,7 +14,7 @@ vm.runInNewContext(readFileSync(new URL('../lib/client.statistics.js', import.me
 const ui = factory(() => ({})), near = (a, b) => assert.ok(Math.abs(a - b) < 1e-10, `${a} != ${b}`)
 const price = { cacheMiss: 2, cacheHit: .5, cacheWrite: 3, output: 8, reasoning: 1 }
 const long = { aboveInputTokens: 1500, ...Object.fromEntries(Object.entries(price).map(([key, value]) => [key, value * 2])) }
-const config = sanitizeConfig({ peakEnabled: false, exchangeRate: 7, prices: { providers: { test: { currency: 'USD', models: { m: { ...price, longContext: long } } } } } })
+const config = sanitizeConfig({ peakEnabled: false, currency:'CNY', fxRates:{USD:1,CNY:7,EUR:0.92}, exchangeRate: 7, exchangeRateAuto:false, prices: { providers: { test: { currency: 'USD', models: { m: { ...price, longContext: long } } } } } })
 const usage = { inputTokens: 100, cacheReadTokens: 300, cacheWriteTokens: 100, outputTokens: 200, reasoningTokens: 50 }
 const header = { config: { provider: 'test', model: 'm' } }
 const at = 1800000000000

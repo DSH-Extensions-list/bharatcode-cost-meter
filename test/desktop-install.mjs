@@ -48,7 +48,7 @@ initProfile(${JSON.stringify(join(home, 'profiles', 'desktop'))}, PROFILE_TEMPLA
   await run([bootstrap])
   await run([desktopCli, 'plugin', '--profile', 'desktop', 'add', tarball])
   const manifest = JSON.parse(readFileSync(join(home, 'profiles', 'desktop', 'package.json'), 'utf8'))
-  assert.ok(manifest.dsh.profile.bundles.includes('dsh-cost-meter'))
+  assert.ok(manifest.dsh.profile.bundles.includes('@arzvaak/bharatcode-cost-meter'))
   const patch = join(work, 'probe.patch.yml')
   writeFileSync(patch, `- insert:\n    - id: cost-meter-compatibility-probe\n      name: ${JSON.stringify(pathToFileURL(join(repo, 'test/fixtures/host-compatibility-probe/index.mjs')).href)}\n`)
   const socket = createServer()

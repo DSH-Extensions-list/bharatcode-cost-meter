@@ -47,7 +47,7 @@ for (const [face, descriptors] of [['host', TYPERT.invocations], ['client', cont
   for (const descriptor of descriptors) {
     for (const codec of [descriptor.result, ...descriptor.parameters.map(parameter => parameter.codec)]) {
       assert.equal(codec.mode, 'strict', `${face}/${descriptor.method}`)
-      assert.ok(codec.typeSymbol.startsWith('dsh-cost-meter#'))
+      assert.ok(codec.typeSymbol.startsWith('@arzvaak/bharatcode-cost-meter#'))
       assert.equal(typeof codec.create, 'function', `${face}/${descriptor.method} needs create()`)
       assert.equal(codec.create(), codec.schema, 'both host generations use the same parser')
       assert.equal(typeof codec.create().parse, 'function')
@@ -89,9 +89,9 @@ if (process.env.DSH_TEST_NODE_MODULES) {
 }
 if (loader) {
   const { validateTypertManifest } = await import(pathToFileURL(loader).href)
-  assert.ok(validateTypertManifest('dsh-cost-meter', TYPERT))
+  assert.ok(validateTypertManifest('@arzvaak/bharatcode-cost-meter', TYPERT))
   const broken = { ...TYPERT, invocations: TYPERT.invocations.map(item => ({ ...item, result: { ...item.result, mode: 'src-json' } })) }
-  assert.throws(() => validateTypertManifest('dsh-cost-meter', broken), /strict codec/)
+  assert.throws(() => validateTypertManifest('@arzvaak/bharatcode-cost-meter', broken), /strict codec/)
   console.log('[ok] 安装的真实宿主 loader 接受双入口 codec，拒绝无效清单')
 } else {
   console.log('[skip] 未安装宿主 loader；设置 DSH_TEST_NODE_MODULES 可运行真实宿主校验')

@@ -21,7 +21,7 @@
  */
 
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter',
+  id: '@arzvaak/bharatcode-cost-meter',
   factory: (require) => {
     var module = { exports: {} }
     var exports = module.exports
@@ -409,7 +409,7 @@ window.__ModuleLoader__.load({
       const existing = document.querySelector('style[data-plugin-css=' + JSON.stringify(cssTagId) + ']')
       if (existing?.textContent !== css) {
         const tag = existing ?? document.createElement('style')
-        tag.dataset.plugin = 'dsh-cost-meter'
+        tag.dataset.plugin = '@arzvaak/bharatcode-cost-meter'
         tag.dataset.pluginCss = cssTagId
         tag.textContent = css
         if (existing === null) document.head.appendChild(tag)
@@ -1493,15 +1493,11 @@ window.__ModuleLoader__.load({
       const lang = typeof value === 'string' ? value.toLowerCase().split(/[-_]/)[0] : ''
       return lang === 'zh' || lang === 'en' ? lang : null
     }
-    function resolveLocale(config) {
-      const value = typeof config === 'string' ? config : config?.locale
-      if (value === 'zh' || value === 'en') return value
-      return supportedLocale(config?.activeLocale) || detectBrowserLocale()
-    }
+    function resolveLocale(config) { return 'en' }
 
     /** 构造按当前语言取文案的函数 t(key, vars)。 */
     function makeT(locale) {
-      const dict = locale === 'zh' ? MESSAGES.zh : MESSAGES.en
+      const dict = false ? MESSAGES.zh : MESSAGES.en
       return (key, vars) => {
         let text = dict[key] ?? MESSAGES.en[key] ?? key
         if (vars) for (const name of Object.keys(vars)) text = text.split('{' + name + '}').join(String(vars[name]))

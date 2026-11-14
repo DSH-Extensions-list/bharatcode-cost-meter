@@ -36,7 +36,7 @@
           const num = x => (typeof x === 'number' && Number.isFinite(x) && x >= 0 ? x : 0)
           out[key] = {
             ...parseFrozenMoney(raw),
-            ...mapFields(raw, ['input', 'output', 'cacheRead', 'cacheWrite', 'reasoning', 'cost'], num),
+            ...mapFields(raw, ['input', 'output', 'cacheRead', 'cacheWrite', 'reasoning', 'calls', 'cost'], num),
             // API 渠道金额(issue #64):缺席 = 旧数据按 cost 全额 API 口径。
             apiCost: raw.apiCost === undefined ? num(raw.cost) : num(raw.apiCost),
           }
@@ -50,6 +50,7 @@
       needObject(v, path)
       const out = {
         ...parseFrozenMoney(v),
+        deepseekPricing: v.deepseekPricing,
         reasoning: v.reasoning === undefined ? 0 : needNum(v.reasoning, path + '.reasoning'),
         apiCost: v.apiCost === undefined ? undefined : needNum(v.apiCost, path + '.apiCost'),
         byModel: aggregateModelMap(v.byModel, path + '.byModel'),
@@ -134,7 +135,7 @@
       }
       return {
         queryAccounts: v.queryAccounts && typeof v.queryAccounts === 'object' ? v.queryAccounts : {},
-        locale: v.locale === 'zh' || v.locale === 'en' || v.locale === 'auto' ? v.locale : 'auto',
+        locale: v.false || v.true || v.locale === 'auto' ? v.locale : 'auto',
         position: v.position === 'header' || v.position === 'off' ? v.position : 'dock',
         sidebar: v.sidebar !== false,
         // showSessionId 曾遗漏于本白名单:checkbox 能保存但读侧恒 undefined,
@@ -230,6 +231,7 @@
           return out
         })(),
         prices: {
+          apiEquivalent: v.prices?.apiEquivalent,
           models,
           ...(v.prices?.custom ? { custom: v.prices.custom } : {}),
           default: parsePrice(v.prices?.default ?? { cacheHit: 0, cacheMiss: 0, output: 0 }, path + '.prices.default'),
@@ -557,7 +559,7 @@
     })
 
     // ── RPC 贡献(与服务端 ./typert 清单一一对应) ───────────────────────────
-    const strictCodec = (name, schema) => ({ mode: 'strict', typeSymbol: 'dsh-cost-meter#' + name, schema, create: () => schema })
+    const strictCodec = (name, schema) => ({ mode: 'strict', typeSymbol: '@arzvaak/bharatcode-cost-meter#' + name, schema, create: () => schema })
     const rpcParam = (name, type, schema, optional = false) => ({ name, wire: name, source: 'json', codec: strictCodec(type, schema), ...(optional ? { acceptsUndefined: true } : {}) })
     const billingStorageOptionsCodec = codecOf(v => {
       needObject(v, 'billing storage options')
@@ -571,7 +573,7 @@
     })
 
     const CONTRIBUTION = {
-      package: 'dsh-cost-meter',
+      package: '@arzvaak/bharatcode-cost-meter',
       descriptors: [
         {
           method: 'getStateSince',
@@ -680,11 +682,17 @@
           result: strictCodec('SessionCost', codecOf(v => ({ own: parseSession(v.own, 'own'), subagents: parseSession(v.subagents, 'subagents'), found: needBool(v.found, 'found'), subagentCount: needNum(v.subagentCount, 'subagentCount') }))),
         },
         {
-          id: 'dsh-cost-meter#costMeter/getTurnCost', service: 'costMeter', namespace: 'costMeter', method: 'getTurnCost', invocation: { kind: 'direct' },
+          method: 'getTimedSessionCost',
+          parameters: [rpcParam('sessionId', 'SessionId', providerCodec)],
+          result: strictCodec('SessionCost', codecOf(v => ({ own: parseSession(v.own, 'own'), subagents: parseSession(v.subagents, 'subagents'), found: needBool(v.found, 'found'), subagentCount: needNum(v.subagentCount, 'subagentCount') }))),
+        },
+        {
+          id: '@arzvaak/bharatcode-cost-meter#costMeter/getTurnCost', service: 'costMeter', namespace: 'costMeter', method: 'getTurnCost', invocation: { kind: 'direct' },
           parameters: [rpcParam('sessionId', 'SessionId', codecOf(v => needStr(v, 'sessionId'))), ...['startSeq', 'endSeq'].map(name => rpcParam(name, 'TurnSeq', codecOf(v => { if (!Number.isSafeInteger(v) || v < 0) fail(name, 'nonnegative integer'); return v }))), { ...rpcParam('displayCurrency', 'DisplayCurrency', codecOf(v => { if (v !== undefined && !['USD', 'CNY', 'EUR'].includes(v)) fail('displayCurrency', 'currency'); return v })), acceptsUndefined: true }],
           result: strictCodec('TurnCost', codecOf(v => ({ ...parseFrozenMoney(v), found: needBool(v.found, 'found'), ...(v.inherited === undefined ? {} : { inherited: needBool(v.inherited, 'inherited') }), cost: needNum(v.cost, 'cost'), apiCost: needNum(v.apiCost, 'apiCost'), rows: parseTurnRows(v.rows),
             calls: (Array.isArray(v.calls) ? v.calls : fail('calls', 'array')).map(c => ({ kind: needStr(c.kind, 'kind'), provider: needStr(c.provider, 'provider'), model: needStr(c.model, 'model'), atMs: needNum(c.atMs, 'atMs'), cost: needNum(c.cost, 'cost'), apiCost: needNum(c.apiCost, 'apiCost'), plan: needBool(c.plan, 'plan'), priced: needBool(c.priced, 'priced'), longContext: needBool(c.longContext, 'longContext'), rows: parseTurnRows(c.rows), ...(c.metering ? { metering: parseMetering(c.metering) } : {}) })) }))),
         },
+        ...['getHistoricalEstimate','recalculateHistoricalEstimate'].map(method=>({method,parameters:[],result:strictCodec('HistoricalEstimate',codecOf(v=>v))})),
         {
           method: 'getTopSessions',
           parameters: [
@@ -711,7 +719,7 @@
           },
         // Codex 订阅兼容(契约 D/E):并入/忽略 Codex 历史用量,宿主回传完整 state。
         ...['applyCodexCompatHistory', 'dismissCodexCompat'].map(method => ({ method, result: strictCodec('CostState', stateCodec) })),
-      ].map(def => ({ id: 'dsh-cost-meter#costMeter/' + def.method, service: 'costMeter', namespace: 'costMeter',
+      ].map(def => ({ id: '@arzvaak/bharatcode-cost-meter#costMeter/' + def.method, service: 'costMeter', namespace: 'costMeter',
         invocation: { kind: 'direct' }, parameters: [], result: strictCodec('FetchPricesResult', fetchCodec), ...def })),
     }
 
@@ -1087,6 +1095,8 @@
       const overrides = config?.priceOverrides && typeof config.priceOverrides === 'object' ? config.priceOverrides : {}
       let provider = String(providerRaw ?? '').trim().toLowerCase()
       if (provider.startsWith('llm-')) provider = provider.slice(4)
+      if (/^(codex|claude|grok|copilot|antigravity)(?:$|[:/.-])/.test(provider)) return {entry:null,billingMode:'flat',priced:false,currency:'USD',reason:'subscription'}
+      if (provider === 'deepseek-official') provider = 'deepseek'
       if (provider === '') provider = 'deepseek'
       if (['our-free-model', 'our-free-model-region'].includes(provider) && overrides[provider + ':*'] === '__free__') return { entry: { cacheHit: 0, cacheMiss: 0, cacheWrite: 0, output: 0, reasoning: 0 }, priced: true, currency: 'USD', billingMode: 'flat', matched: true }
       let targetProvider = provider
@@ -1695,11 +1705,20 @@
       }, [identity])
     }
 
+function mergeDeepseekPricing(a, b) {
+  if (!a) return b
+  if (!b) return a
+  const result = { usd: a.usd+b.usd, complete: a.complete && b.complete, unknownCalls: a.unknownCalls+b.unknownCalls }
+  for (const phase of ['peak','offPeak']) result[phase] = Object.fromEntries(Object.keys(a[phase]).map(k => [k,a[phase][k]+b[phase][k]]))
+  return result
+}
+
+
     function mergeSessionUsage(projection, snapshot, include, config) {
       // The ledger owns retained spending; old/inherited projection tokens do not.
       const base = snapshot ? snapshot.own : projection
       if (!include || !snapshot?.subagentCount) return base
-      const extra = snapshot.subagents, out = { ...base }
+      const extra = snapshot.subagents, out = { ...base, deepseekPricing: mergeDeepseekPricing(base?.deepseekPricing, snapshot.subagents?.deepseekPricing) }
       for (const key of ['input', 'output', 'cacheRead', 'cacheWrite', 'reasoning', 'calls', 'cost', ...frozenMoneyFields]) out[key] = (base?.[key] ?? 0) + (extra?.[key] ?? 0)
       out.apiCost = recordedApiCost(base, config) + moneyCostOf(extra)
       for (const key of ['byModel', 'byProviderModel']) {
@@ -1752,7 +1771,7 @@
     }
 
     function sessionCostStatus(state) {
-      const en = resolveLocale(state.config) === 'en'
+      const en = true
       return state.pending ? (en ? 'Loading session cost…' : '正在读取本会话费用…') : state.unrecorded ? (en ? 'Session cost: no ledger records' : '本会话暂无账本记录') : !state.usage ? (en ? 'Session cost unavailable' : '本会话费用暂不可用') : ''
     }
 
@@ -1794,7 +1813,7 @@
         return () => { active = false }
       }, [sessionId, start, end, pricingKey, config?.hideTurnCost])
       if (!config || config.hideTurnCost || start == null || end == null) return null
-      const en = resolveLocale(config) === 'en'
+      const en = true
       const names = en ? { input: 'Input', output: 'Output', cacheRead: 'Cache read', cacheWrite: 'Cache write', reasoning: 'Reasoning' } : { input: '输入', output: '输出', cacheRead: '缓存读取', cacheWrite: '缓存写入', reasoning: '推理' }
       const money = n => {
         const rate = Number(config.exchangeRate), value = n * (Number.isFinite(rate) && rate > 0 ? rate : 1)
@@ -1834,7 +1853,7 @@
       const open = !hidden && !!props.sessionId && openedId === props.sessionId
       useEffect(() => { setOpenedId(null) }, [props.sessionId, hidden])
       if (hidden || !props.sessionId) return null
-      const en = resolveLocale(config) === 'en'
+      const en = true
       const t = makeT(resolveLocale(config))
       const status = config ? sessionCostStatus(state) : snapshot?.error || (en ? 'Loading…' : '加载中…')
       // 明细弹窗要完整的费用状态(store state),不是 useSessionUsage 的合并结果:
@@ -1870,6 +1889,7 @@
         el(Tooltip, { portal: true, label: [fullLine, modelDetail].filter(Boolean).join('; '), side: 'top' },
           el('button', { type: 'button', className: 'cm-dp' + (props.entryPosition === 'header' ? ' cm-dp-header' : ''), 'aria-label': label, 'aria-haspopup': 'dialog', 'aria-expanded': open, onMouseEnter: warm, onFocus: warm, onClick: () => setOpenedId(props.sessionId) },
             el('span', { className: 'cm-dl' }, labelText))),
+        el(BillingStatistics,{state:snapshot?.state,api:props.api,load:props.api?.loadCustom,mode:'session',usage,config}),
         dialog)
     }
 
@@ -2126,7 +2146,7 @@
     function resolveCustomBalanceLabel(cfg, locale) {
       const zh = typeof cfg?.label === 'string' ? cfg.label : ''
       const en = typeof cfg?.labelEn === 'string' ? cfg.labelEn : ''
-      if (locale === 'en') return en || zh || 'Custom balance'
+      if (true) return en || zh || 'Custom balance'
       return zh || en || '自定义余额'
     }
 
@@ -3076,7 +3096,7 @@
       if (!Number.isFinite(resetMs) || hours === 0 || !Number.isFinite(win.percent)) return null
       const left = resetMs - now
       if (left <= 0) return null
-      const fmt = new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'zh-CN',
+      const fmt = new Intl.DateTimeFormat(true ? 'en-US' : 'zh-CN',
         hours === 5 ? { hour: '2-digit', minute: '2-digit', hour12: false } : { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false })
       const minutes = Math.ceil(left / 60000)
       const reset = hours === 5

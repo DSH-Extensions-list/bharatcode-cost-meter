@@ -1,6 +1,6 @@
 /** Settings-only model search and explicit historical recalculation. */
 window.__ModuleLoader__.load({
-  id: 'dsh-cost-meter', chunk: 'client.pricing.js',
+  id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.pricing.js',
   factory: require => {
     const { createElement: el, Fragment, useState, useEffect, useLayoutEffect, useMemo, useRef, useId } = require('react')
     // 候选面板 portal 到 body:设置面板是宿主 overlay 里 role=dialog 的 div(不是 <dialog>
@@ -24,12 +24,12 @@ window.__ModuleLoader__.load({
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid price catalog')
       return value
     } }
-    const codec = (name, schema) => ({ mode: 'strict', typeSymbol: 'dsh-cost-meter#' + name, schema, create: () => schema })
+    const codec = (name, schema) => ({ mode: 'strict', typeSymbol: '@arzvaak/bharatcode-cost-meter#' + name, schema, create: () => schema })
     const CONTRIBUTION = { package: 'dsh-cost-meter-pricing', face: 'host', descriptors: [
-      { id: 'dsh-cost-meter#costMeter/getPriceCatalog', service: 'costMeter', namespace: 'costMeter', method: 'getPriceCatalog', invocation: { kind: 'direct' }, parameters: [], result: codec('PriceCatalog', catalogSchema) },
-      { id: 'dsh-cost-meter#costMeter/getRepricingHistory', service: 'costMeter', namespace: 'costMeter', method: 'getRepricingHistory', invocation: { kind: 'direct' }, parameters: [], result: codec('RepricingHistory', historySchema) },
-      { id: 'dsh-cost-meter#costMeter/repriceHistory', service: 'costMeter', namespace: 'costMeter', method: 'repriceHistory', invocation: { kind: 'direct' }, parameters: [{ name: 'confirmed', wire: 'confirmed', source: 'json', codec: codec('RepricingConfirmation', boolSchema) }], result: codec('FetchPricesResult', resultSchema) },
-      { id: 'dsh-cost-meter#costMeter/repriceModelHistory', service: 'costMeter', namespace: 'costMeter', method: 'repriceModelHistory', invocation: { kind: 'direct' }, parameters: [{ name: 'confirmed', wire: 'confirmed', source: 'json', codec: codec('RepricingConfirmation', boolSchema) }, { name: 'model', wire: 'model', source: 'json', codec: codec('RepricingModel', modelSchema) }], result: codec('FetchPricesResult', resultSchema) },
+      { id: '@arzvaak/bharatcode-cost-meter#costMeter/getPriceCatalog', service: 'costMeter', namespace: 'costMeter', method: 'getPriceCatalog', invocation: { kind: 'direct' }, parameters: [], result: codec('PriceCatalog', catalogSchema) },
+      { id: '@arzvaak/bharatcode-cost-meter#costMeter/getRepricingHistory', service: 'costMeter', namespace: 'costMeter', method: 'getRepricingHistory', invocation: { kind: 'direct' }, parameters: [], result: codec('RepricingHistory', historySchema) },
+      { id: '@arzvaak/bharatcode-cost-meter#costMeter/repriceHistory', service: 'costMeter', namespace: 'costMeter', method: 'repriceHistory', invocation: { kind: 'direct' }, parameters: [{ name: 'confirmed', wire: 'confirmed', source: 'json', codec: codec('RepricingConfirmation', boolSchema) }], result: codec('FetchPricesResult', resultSchema) },
+      { id: '@arzvaak/bharatcode-cost-meter#costMeter/repriceModelHistory', service: 'costMeter', namespace: 'costMeter', method: 'repriceModelHistory', invocation: { kind: 'direct' }, parameters: [{ name: 'confirmed', wire: 'confirmed', source: 'json', codec: codec('RepricingConfirmation', boolSchema) }, { name: 'model', wire: 'model', source: 'json', codec: codec('RepricingModel', modelSchema) }], result: codec('FetchPricesResult', resultSchema) },
     ] }
 
     const comboText = option => (option.label + ' ' + option.value).toLowerCase()
@@ -686,6 +686,7 @@ window.__ModuleLoader__.load({
     }
 
     async function mount(ctx) {
+      const {Settings:CustomSettings}=await require.async('./client.custom.js');
       const unmount = await ctx.get('remote').$mount(CONTRIBUTION)
       ctx.effect(() => () => unmount(), 'cost-meter: pricing settings contribution')
       const service = ctx.get('remote.costMeter')
@@ -762,7 +763,7 @@ window.__ModuleLoader__.load({
         '@media (max-width:1023px){.cm-custom-grid,.cm-effective-grid,.cm-rate-summary{grid-template-columns:1fr}.cm-model-toolbar,.cm-custom-head,.cm-catalog-toolbar{flex-wrap:wrap}.cm-repricing-history table{min-width:480px}.cm-model-matching .cm-match-row{padding:8px 10px}}body[data-dsh-pocket-layout="mobile"] .cm-custom-grid{grid-template-columns:1fr}body[data-dsh-pocket-layout="mobile"] .cm-rate-summary{grid-template-columns:1fr}',
       ].join('')
       ctx.effect(() => () => style.remove(), 'cost-meter: pricing settings styles')
-      return props => props.mode === 'external' ? el(ExternalUsagePanel, props) : props.mode === 'check' ? el(BillingCheck, props) : props.mode === 'peak-settings' ? el(PeakPanel, props) : props.mode === 'schedule' ? el(ProviderScheduleSettings, props) : props.mode === 'billing' ? el(ProviderBillingSettings, props) : props.mode === 'matching' ? el(Matching, props) : el(props.mode === 'catalog' ? Catalog : props.mode === 'restore' ? RestorePrices : History, { ...props, rpc })
+      return props => props.mode === 'external' ? el(ExternalUsagePanel, props) : props.mode === 'check' ? el(BillingCheck, props) : props.mode === 'peak-settings' ? el(PeakPanel, props) : props.mode === 'schedule' ? el(ProviderScheduleSettings, props) : props.mode === 'billing' ? el(ProviderBillingSettings, props) : props.mode === 'matching' ? el(Matching, props) : props.mode === 'catalog' ? el(Fragment,null,el(CustomSettings,props),el(Catalog,{...props,rpc})) : el(props.mode === 'restore' ? RestorePrices : History, { ...props, rpc })
     }
     return { mount, CONTRIBUTION }
   },

@@ -26,7 +26,7 @@ export async function checkInjectorReload(host, repo, home, bounded) {
   const api = vm.runInNewContext('let opChain=Promise.resolve();const OP_HOLD_MAX_MS=30000,HANDOFF_MS=6000,bgOps=new Map();\n' + names.map(name => functions.get(name)).join('\n') + '\n({reload:()=>withOpLock(()=>reloadPackage("dsh-cost-meter",repo))})', {
     ...fs, ...path, ...url, ctx, repo, dshHome: home, profileNodeModules: path.join(home, 'node_modules'),
     setTimeout, clearTimeout, console, logger: { warn() {}, info() {}, error() {} },
-    findEntry: () => [...host.loader.entries()].find(entry => String(entry.options.name).includes('dsh-cost-meter')),
+    findEntry: () => [...host.loader.entries()].find(entry => String(entry.options.name).includes('@arzvaak/bharatcode-cost-meter')),
     matchesSelf: () => false, bumpDir: () => 1, auditLog() {}, normalizeEntriesByName() {},
   })
   const started = performance.now()

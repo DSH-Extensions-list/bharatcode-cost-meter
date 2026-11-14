@@ -23,7 +23,7 @@ import React from ${JSON.stringify(req.resolve('react'))};import{createRoot}from
 const mainRequire=n=>n==='react'?React:n==='react-dom'?ReactDOM:{Tooltip:({children})=>children};mainRequire.async=async()=>window.noticeUI;
 window.__ModuleLoader__={load:m=>window.costUI=m.factory(mainRequire)};
 ${readFileSync(baseline ? '.tmp-balance-notice-before.js' : 'lib/client.js', 'utf8')}
-${baseline ? '' : `window.__ModuleLoader__={load:m=>{if(m.id!=='dsh-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.noticeUI=m.factory(n=>n==='react'?React:{})}};${readFileSync('lib/client.notices.js','utf8')}`}
+${baseline ? '' : `window.__ModuleLoader__={load:m=>{if(m.id!=='@arzvaak/bharatcode-cost-meter'||m.chunk!=='client.notices.js')throw Error('wrong notice module registration');window.noticeUI=m.factory(n=>n==='react'?React:{})}};${readFileSync('lib/client.notices.js','utf8')}`}
 let state=${JSON.stringify(state)};const entries=new Map(),disposers=[],services={};window.saves=0;window.saveMode='reject';window.patches=[];
 services['remote.costMeter']={getLocalState:async()=>({ok:true,value:state}),getState:async()=>({ok:true,value:state}),updateConfig:async patch=>{
  window.saves++;window.patches.push(patch);if(window.saveMode==='pending')await new Promise(resolve=>window.finishSave=resolve);

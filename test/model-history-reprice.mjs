@@ -14,7 +14,7 @@ const path = join(root, 'storages', 'cost-meter', 'ledger.json'), at = Date.pars
 const target = 'deepseek-official:deepseek-v4-pro', sibling = 'deepseek-account:deepseek-v4-pro', other = 'deepseek-official:deepseek-flash'
 const oldPrices = JSON.parse(readFileSync(new URL('./fixtures/deepseek-defaults-1.8.32.json', import.meta.url), 'utf8')).CNY
 const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-10, `${a} != ${b}`)
-const config = sanitizeConfig({ legacyAutoImportedAt: 1, exchangeRate: 7, exchangeRateAuto: false, hideOfficialBalance: true, goQuota: { enabled: false }, balance: { display: 'off' }, prices: { ...oldPrices, currency: 'CNY' } })
+const config = sanitizeConfig({ legacyAutoImportedAt: 1, currency:"CNY",fxRates:{USD:1,CNY:7,EUR:0.92},exchangeRate: 7, exchangeRateAuto: false, hideOfficialBalance: true, goQuota: { enabled: false }, balance: { display: 'off' }, prices: { ...oldPrices, currency: 'CNY' } })
 let service, requests = 0
 try {
   process.env.DSH_HOME = root

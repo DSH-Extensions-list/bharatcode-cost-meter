@@ -49,8 +49,8 @@ try {
   if (RemoteAccess) await host.plugin(RemoteAccess).await()
   await host.plugin(Gateway, {}).await()
   await host.loader.root.update([{ id: 'cost-meter', name: pathToFileURL(join(repo, 'lib/index.js')).href }]); await host.loader.await()
-  for (let i = 0; i < 100 && !host.typert.getPackage('dsh-cost-meter'); i++) await new Promise(r => setTimeout(r, 10))
-  assert.ok(host.typert.getPackage('dsh-cost-meter'))
+  for (let i = 0; i < 100 && !host.typert.getPackage('@arzvaak/bharatcode-cost-meter'); i++) await new Promise(r => setTimeout(r, 10))
+  assert.ok(host.typert.getPackage('@arzvaak/bharatcode-cost-meter'))
   const check = async () => {
     const result = await invoke('refreshGoQuota')
     assert.equal(result.ok, true); assert.equal(result.state.goQuota.rolling.percent, 17)

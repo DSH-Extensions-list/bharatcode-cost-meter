@@ -28,7 +28,7 @@ assert.equal(ui.prettyProviderKey('zen:model'), 'go:model')
 const tree = ui.TurnCost({ useCost: () => ({ state: { config: sanitizeConfig({ locale: 'zh' }) } }), turn: { start: { seq: 1 }, end: { seq: 5 } }, sessionId: 'fixture' })
 const text = node => Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.children) : node == null ? '' : String(node)
 const nodes = node => Array.isArray(node) ? node.flatMap(nodes) : node && typeof node === 'object' ? [node, ...nodes(node.children)] : []
-assert.ok(text(tree).includes('原生搜索 · deepseek-official:DeepSeek V4.1 Flash'))
+assert.ok(text(tree).includes('Native search · deepseek-official:DeepSeek V4.1 Flash'))
 assert.ok(!text(tree).includes('deepseek-v4-flash'))
 assert.ok(nodes(tree).some(node => node.props.title === 'deepseek-official:deepseek-v4-flash'), 'original ID remains available in the call tooltip')
 assert.equal(JSON.stringify(value), original, 'display normalization never changes recorded IDs or money')

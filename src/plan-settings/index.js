@@ -1,5 +1,5 @@
 /** On-demand subscription settings, including WorkBuddy account statistics. */
-window.__ModuleLoader__.load({ id: 'dsh-cost-meter', chunk: 'client.plan-settings.js', factory: require => {
+window.__ModuleLoader__.load({ id: '@arzvaak/bharatcode-cost-meter', chunk: 'client.plan-settings.js', factory: require => {
   const { createElement: el, useState, Fragment } = require('react')
   const subscriptionCatalog = /* SUBSCRIPTION_CATALOG_SOURCE */ {}
   return { mount(helpers) {
